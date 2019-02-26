@@ -92,7 +92,7 @@ class App extends Component {
         this.setState({ [name]: value, gammaError: (value >= 1 && value <= 3) || value === '' ? false : true })
         break;
       default:
-        console.log('Unknown case')
+        return null;
     }
   }
 

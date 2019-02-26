@@ -7,6 +7,7 @@ const sharp = require('sharp');
 const formidable = require('formidable');
 const uploadDir = path.join(__dirname, '/uploaded_pics/');
 const processedFilesDir = path.join(__dirname, '/processed_pics/')
+const fs = require('fs');
 
 let imageToProcessFile;
 let imageToProcessMetadata;
@@ -53,6 +54,14 @@ app.post('/api/imageProcessing', (req, res) => {
   let params = req.body;
   performImageProcessing(params).then((out) => {
     res.sendFile(out)
+    res.on('finish',()=>{
+      fs.unlink(out, (err) => {
+        if (err) throw err;
+      });
+      fs.unlink(imageToProcessFile, (err) => {
+        if (err) throw err;
+      })
+    })
   })
 })
 

@@ -9,6 +9,9 @@ const uploadDir = path.join(__dirname, '/uploaded_pics/');
 const processedFilesDir = path.join(__dirname, '/processed_pics/')
 const fs = require('fs');
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
 let imageToProcessFile;
 let imageToProcessMetadata;
 let imageStream;
@@ -16,10 +19,15 @@ let imageName;
 let imageExtension;
 let processedFilePath;
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+//create folders for uploading and processing
+if (!fs.existsSync(uploadDir)){
+  fs.mkdirSync(uploadDir);
+}
+if (!fs.existsSync(processedFilesDir)){
+  fs.mkdirSync(processedFilesDir);
+}
 
-
+//endpoints
 app.post('/api/upload', (req, res) => {
   imageToProcessFile = null
   imageToProcessMetadata = null;

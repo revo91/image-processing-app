@@ -7,6 +7,7 @@ const sharp = require('sharp');
 const formidable = require('formidable');
 const tempDir = path.join(__dirname, '/temp')
 const fs = require('fs');
+const rimraf = require('rimraf')
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -23,6 +24,32 @@ let previewFile;
 if (!fs.existsSync(tempDir)){
   fs.mkdirSync(tempDir);
 }
+
+//delete left-off files every 10 hours
+deleteRemainingFiles = () => {
+  fs.readdir(tempDir, function(err, files) {
+    files.forEach(function(file, index) {
+      fs.stat(path.join(tempDir, file), function(err, stat) {
+        var endTime, now;
+        if (err) {
+          return console.error(err);
+        }
+        now = new Date().getTime();
+        //delete older than 10 hours
+        endTime = new Date(stat.ctime).getTime() + 36000000;
+        if (now > endTime) {
+          return rimraf(path.join(tempDir, file), function(err) {
+            if (err) {
+              return console.error(err);
+            }
+          });
+        }
+      });
+    });
+  });
+}
+setInterval(()=>deleteRemainingFiles(),36000000);
+
 
 //endpoints
 app.post('/api/upload', (req, res) => {
@@ -108,8 +135,6 @@ performImageProcessing = (params) => {
     // write to file
     processedFilePath = path.join(tempDir, `${imageName}_converted.${imageExtension}`)
     imageStream.toFile(processedFilePath, (err, info) => { resolve(processedFilePath) })
-
-
   })
 }
 

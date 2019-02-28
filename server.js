@@ -90,9 +90,6 @@ app.post('/api/imageProcessing', (req, res) => {
       fs.unlink(imageToProcessFile, (err) => {
         if (err) throw err;
       })
-      fs.unlink(previewFile, (err) => {
-        if (err) throw err;
-      })
     })
   })
 })

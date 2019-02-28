@@ -251,19 +251,21 @@ class Settings extends React.Component {
           </Grid>
           </Grid>
           <Grid container item xs={12} sm={12} md={6} spacing={24}>
-            <Grid item xs={12}>{this.props.processedImagePreview}</Grid>
+            <Grid item xs={12}>
+            <Typography variant="h6" className={classes.settingsSubheading}>Podgląd</Typography>
+            {this.props.processedImagePreview}</Grid>
           </Grid>
         </Grid>
     
       
-        <Grid container spacing={24} className={classes.navButtons}>
+        <Grid container spacing={24} className={classes.navButtons} justify="center">
           <Grid item xs={12} sm={6} md={4} lg={3}>
-            <Button fullWidth variant="outlined" color="secondary" onClick={() => this.props.navigation(0)}>
+            <Button fullWidth variant="contained" color="secondary" onClick={() => this.props.navigation(0)}>
               Reset
         </Button>
           </Grid>
           <Grid item xs={12} sm={6} md={4} lg={3}>
-            <Button fullWidth variant="outlined" color="primary" onClick={() => this.props.navigation(2)}
+            <Button fullWidth variant="contained" color="primary" onClick={() => this.props.navigation(2)}
               disabled={this.props.resolutionError || this.props.rotateError || this.props.blurError || this.props.gammaError}>
               Dalej
         </Button>

@@ -53,7 +53,13 @@ class App extends Component {
     //uploaded image to display
     uploadedImage: '',
     //image preview live,
-    imageProcessingPreview: ''
+    imageProcessingPreview: '',
+    //previewToggle
+    previewToggle: "processingPreview"
+  }
+
+  handlePreviewToggle = (state) => {
+    this.setState({ previewToggle: state })
   }
 
   handleStepper = (step) => {
@@ -80,24 +86,19 @@ class App extends Component {
   }
 
   handleSettings = (name, value) => {
-    this.setState({ [name]: value })
+    this.setState({ [name]: value },()=>this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale))
     switch (name) {
       case 'resolution':
-        this.setState({ [name]: value, resolutionError: (value >= 1 && value <= 100) || value === '' ? false : true })
+        this.setState({ [name]: value, resolutionError: (value >= 1 && value <= 100) || value === '' ? false : true },()=>this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale))
         break;
       case 'rotate':
-        this.setState({ [name]: value, rotateError: (value >= -360 && value <= 360) || value === '' ? false : true },()=>{
-          if (this.state.rotateError!==true)
-          {
-
-          }
-        })
+        this.setState({ [name]: value, rotateError: (value >= -360 && value <= 360) || value === '' ? false : true },()=>this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale))
         break;
       case 'blur':
-        this.setState({ [name]: value, blurError: (value >= 1 && value <= 20) || value === '' ? false : true })
+        this.setState({ [name]: value, blurError: (value >= 1 && value <= 20) || value === '' ? false : true },()=>this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale))
         break;
       case 'gamma':
-        this.setState({ [name]: value, gammaError: (value >= 1 && value <= 3) || value === '' ? false : true })
+        this.setState({ [name]: value, gammaError: (value >= 1 && value <= 3) || value === '' ? false : true },()=>this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale))
         break;
       default:
         return null;
@@ -146,52 +147,73 @@ class App extends Component {
     }).then(res=> {
       var blob = new Blob([res.data], {type: "image/jpeg"});
       var url = URL.createObjectURL(blob);
-      this.setState({uploadedImage: url})
+      if(this.state.imageProcessingPreview==='')
+      {
+        this.setState({ uploadedImage: url, imageProcessingPreview: url })
+      }
+      else {
+        this.setState({ uploadedImage: url })
+      }
+      
     })
   }
 
-  requestImageProcessingPreview = () => {
-    axios({
-      url: '/api/getImagePreviewLive',
-      method: 'POST',
-      responseType: 'arraybuffer',
-    }).then(res=> {
-      var blob = new Blob([res.data], {type: "image/jpeg"});
-      var url = URL.createObjectURL(blob);
-      this.setState({imageProcessingPreview: url})
-    })
+  requestImageProcessingPreview = (rotate, blur, gamma, flipY, flipX, negate, normalize, grayscale) => {
+    if((this.state.resolutionError || this.state.rotateError || this.state.blurError || this.state.gammaError)!==true)
+    {
+      let params = new URLSearchParams();
+      params.append('rotate', rotate);
+      params.append('blur', blur);
+      params.append('gamma', gamma);
+      params.append('flipY', flipY);
+      params.append('flipX', flipX);
+      params.append('negate', negate);
+      params.append('normalize', normalize);
+      params.append('grayscale', grayscale);
+      axios({
+        url: '/api/getImagePreviewLive',
+        method: 'POST',
+        responseType: 'arraybuffer',
+        data: params
+      }).then(res=> {
+        var blob = new Blob([res.data], {type: "image/jpeg"});
+        var url = URL.createObjectURL(blob);
+        this.setState({imageProcessingPreview: url})
+      })
+    }
   }
 
-  requestImageProcessing = (resolution, rotate, blur, gamma, flipY, flipX, negate, normalize, grayscale, colorspace, removeAlpha, addAlpha) => {
-    let renderingInProgressSnackbar = this.props.enqueueSnackbar('Trwa renderowanie pliku...', { variant: 'info', persist: 'true' })
-    let params = new URLSearchParams();
-    params.append('resolution', resolution);
-    params.append('rotate', rotate);
-    params.append('blur', blur);
-    params.append('gamma', gamma);
-    params.append('flipY', flipY);
-    params.append('flipX', flipX);
-    params.append('negate', negate);
-    params.append('normalize', normalize);
-    params.append('grayscale', grayscale);
-    params.append('colorspace', colorspace);
-    params.append('removeAlpha', removeAlpha);
-    params.append('addAlpha', addAlpha);
-    axios({
-      url: '/api/imageProcessing',
-      method: 'POST',
-      responseType: 'arraybuffer',
-      data: params,
-    }).then(res => {
-      this.props.closeSnackbar(renderingInProgressSnackbar)
-      const url = window.URL.createObjectURL(new Blob([res.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `${imageName}_converted.${imageExtension}`);
-      document.body.appendChild(link);
-      link.click();
-    })
-  }
+    requestImageProcessing = (resolution, rotate, blur, gamma, flipY, flipX, negate, normalize, grayscale, colorspace, removeAlpha, addAlpha) => {
+      let renderingInProgressSnackbar = this.props.enqueueSnackbar('Trwa renderowanie pliku...', { variant: 'info', persist: 'true' })
+      let params = new URLSearchParams();
+      params.append('resolution', resolution);
+      params.append('rotate', rotate);
+      params.append('blur', blur);
+      params.append('gamma', gamma);
+      params.append('flipY', flipY);
+      params.append('flipX', flipX);
+      params.append('negate', negate);
+      params.append('normalize', normalize);
+      params.append('grayscale', grayscale);
+      params.append('colorspace', colorspace);
+      params.append('removeAlpha', removeAlpha);
+      params.append('addAlpha', addAlpha);
+      axios({
+        url: '/api/imageProcessing',
+        method: 'POST',
+        responseType: 'arraybuffer',
+        data: params,
+      }).then(res => {
+        this.props.closeSnackbar(renderingInProgressSnackbar)
+        const url = window.URL.createObjectURL(new Blob([res.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `${imageName}_converted.${imageExtension}`);
+        document.body.appendChild(link);
+        link.click();
+      })
+    }
+  
 
   render() {
     const { classes } = this.props
@@ -244,16 +266,17 @@ class App extends Component {
                         blurError={this.state.blurError}
                         gammaError={this.state.gammaError}
                         //images preview
-                        originalImage={<ImageCard imgSrc={this.state.uploadedImage}></ImageCard>}
-                        processedImagePreview={<ImageCard imgSrc={this.state.uploadedImage}></ImageCard>}
+                        processedImagePreview={<ImageCard imgSrc={this.state.previewToggle==="processingPreview"?this.state.imageProcessingPreview:this.state.uploadedImage} previewToggle={this.handlePreviewToggle}></ImageCard>}
                       ></SettingsTextFields>
                     </React.Fragment>, 
                   metadata: <MetadataTable metadata={this.state.metadata}></MetadataTable>
                 }}></Tabs>
               </Grid></React.Fragment>}
               completedStep={
+                <Grid container spacing={24} className={classes.navButtons} justify="center">
                 <Grid item xs={12} sm={6} md={4} lg={3}>
-                  <Button variant="outlined" color="primary" fullWidth onClick={() => this.handleStepper(0)}>Kolejny plik</Button>
+                  <Button variant="contained" color="primary" fullWidth onClick={() => this.handleStepper(0)}>Kolejny plik</Button>
+                </Grid>
                 </Grid>
               }
             >

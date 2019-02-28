@@ -30,7 +30,7 @@ class MediaCard extends React.Component {
         
           className={classes.media}
           image={this.props.imgSrc || 'https://place-hold.it/400.gif'}
-          title="Oryginalny plik"
+          title="Podgląd"
         />
         {/* <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
@@ -43,10 +43,10 @@ class MediaCard extends React.Component {
         </CardContent> */}
       </CardActionArea>
       <CardActions>
-        <Button size="small" color="primary">
+        <Button size="small" color="primary" onClick={()=>this.props.previewToggle('originalPreview')}>
           Oryginalny
         </Button>
-        <Button size="small" color="primary">
+        <Button size="small" color="primary" onClick={()=>this.props.previewToggle('processingPreview')}>
           Podgląd zmian
         </Button>
       </CardActions>

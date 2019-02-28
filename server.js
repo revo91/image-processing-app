@@ -19,6 +19,7 @@ let imageExtension;
 let processedFilePath;
 let previewFile;
 let previewExtension = 'jpg'
+let processedPreviewFile;
 
 //create folders for uploading and processing
 if (!fs.existsSync(tempDir)){
@@ -112,16 +113,17 @@ app.post('/api/getUploadedImage', (req, res) => {
 
 app.post('/api/getImagePreviewLive', (req, res) => {
   let params = req.body;
-  let processedPreviewFile = path.join(tempDir, `${imageName}_processingInProgress.${previewExtension}`)
-  //zrobic zeby za kazdym wyborem ustawien byl odpytywany ten endpoint na previewFile i .toFile
-  imageStream = sharp(previewFile).toFile(processedPreviewFile, (err, info) => {
-    res.sendFile(processedPreviewFile)
+  performImagePreview(params).then((outputFile) => {
+    res.sendFile(outputFile)
   })
+  
+  //zrobic zeby za kazdym wyborem ustawien byl odpytywany ten endpoint na previewFile i .toFile
+    
+    
 })
 
 //image processing methods
 performImageProcessing = (params) => {
-  console.log(params)
   imageStream = sharp(imageToProcessFile)
   return new Promise(function (resolve, reject) {
     params.resolution !== '' ? imageResize(params.resolution) : null;
@@ -140,6 +142,25 @@ performImageProcessing = (params) => {
     // write to file
     processedFilePath = path.join(tempDir, `${imageName}_converted.${imageExtension}`)
     imageStream.toFile(processedFilePath, (err, info) => { resolve(processedFilePath) })
+  })
+}
+
+performImagePreview = (params) => {
+  imageStream = sharp(previewFile)
+  return new Promise(function (resolve, reject) {
+  params.rotate !== '' ? imageRotate(params.rotate) : null;
+    params.blur !== '' ? imageBlur(params.blur) : null;
+    params.gamma !== '' ? imageGamma(params.gamma) : null;
+    JSON.parse(params.flipY) ? imageFlipY() : null;
+    JSON.parse(params.flipX) ? imageFlipX() : null;
+    JSON.parse(params.negate) ? imageNegate() : null;
+    JSON.parse(params.normalize) ? imageNormalize() : null;
+    JSON.parse(params.grayscale) ? imageGrayscale() : null;
+
+    processedPreviewFile = path.join(tempDir, `${imageName}_processingInProgress.${previewExtension}`)
+    imageStream.toFile(processedPreviewFile, (err, info) => {
+      resolve(processedPreviewFile)
+    })
   })
 }
 

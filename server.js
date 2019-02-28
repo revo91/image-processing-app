@@ -18,6 +18,7 @@ let imageName;
 let imageExtension;
 let processedFilePath;
 let previewFile;
+let previewExtension = 'jpg'
 
 //create folders for uploading and processing
 if (!fs.existsSync(tempDir)){
@@ -96,13 +97,11 @@ app.post('/api/imageProcessing', (req, res) => {
 })
 
 app.post('/api/getUploadedImage', (req, res) => {
-  let params = req.body;
-  let previewExtension = 'jpg'
   previewFile = path.join(tempDir, `${imageName}_preview.${previewExtension}`)
   if(imageToProcessMetadata.width>1000 || imageToProcessMetadata.height>1000)
   {
     imageToProcessMetadata.width>=imageToProcessMetadata.height?imageStream.resize({width: 1000}):imageStream.resize({height: 1000})
-    imageStream.toFormat('jpg').toFile(previewFile, (err, info) => {
+    imageStream.toFormat(previewExtension).toFile(previewFile, (err, info) => {
       res.sendFile(previewFile)
     })
   }
@@ -111,9 +110,19 @@ app.post('/api/getUploadedImage', (req, res) => {
   }
 })
 
+app.post('/api/getImagePreviewLive', (req, res) => {
+  let params = req.body;
+  let processedPreviewFile = path.join(tempDir, `${imageName}_processingInProgress.${previewExtension}`)
+  //zrobic zeby za kazdym wyborem ustawien byl odpytywany ten endpoint na previewFile i .toFile
+  imageStream = sharp(previewFile).toFile(processedPreviewFile, (err, info) => {
+    res.sendFile(processedPreviewFile)
+  })
+})
+
 //image processing methods
 performImageProcessing = (params) => {
   console.log(params)
+  imageStream = sharp(imageToProcessFile)
   return new Promise(function (resolve, reject) {
     params.resolution !== '' ? imageResize(params.resolution) : null;
     params.rotate !== '' ? imageRotate(params.rotate) : null;

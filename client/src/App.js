@@ -51,7 +51,9 @@ class App extends Component {
     blurError: false,
     gammaError: false,
     //uploaded image to display
-    uploadedImage: ''
+    uploadedImage: '',
+    //image preview live,
+    imageProcessingPreview: ''
   }
 
   handleStepper = (step) => {
@@ -84,7 +86,12 @@ class App extends Component {
         this.setState({ [name]: value, resolutionError: (value >= 1 && value <= 100) || value === '' ? false : true })
         break;
       case 'rotate':
-        this.setState({ [name]: value, rotateError: (value >= -360 && value <= 360) || value === '' ? false : true })
+        this.setState({ [name]: value, rotateError: (value >= -360 && value <= 360) || value === '' ? false : true },()=>{
+          if (this.state.rotateError!==true)
+          {
+
+          }
+        })
         break;
       case 'blur':
         this.setState({ [name]: value, blurError: (value >= 1 && value <= 20) || value === '' ? false : true })
@@ -126,24 +133,32 @@ class App extends Component {
         }
         this.setState({ metadata: preparedMeta })
         this.props.closeSnackbar(uploadingInProgressSnackbar)
-        this.requestUploadedImageToDisplay(`${imageName}.${imageExtension}`)
+        this.requestUploadedImageToDisplay()
       }
     })
   }
 
-  requestUploadedImageToDisplay = (filename) => {
-    let params = new URLSearchParams();
-    params.append('filename', filename);
+  requestUploadedImageToDisplay = () => {
     axios({
       url: '/api/getUploadedImage',
       method: 'POST',
-      data: params,
       responseType: 'arraybuffer',
     }).then(res=> {
-      console.log(res.data)
       var blob = new Blob([res.data], {type: "image/jpeg"});
       var url = URL.createObjectURL(blob);
       this.setState({uploadedImage: url})
+    })
+  }
+
+  requestImageProcessingPreview = () => {
+    axios({
+      url: '/api/getImagePreviewLive',
+      method: 'POST',
+      responseType: 'arraybuffer',
+    }).then(res=> {
+      var blob = new Blob([res.data], {type: "image/jpeg"});
+      var url = URL.createObjectURL(blob);
+      this.setState({imageProcessingPreview: url})
     })
   }
 

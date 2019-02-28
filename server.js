@@ -5,8 +5,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 const sharp = require('sharp');
 const formidable = require('formidable');
-const uploadDir = path.join(__dirname, '/uploaded_pics/');
-const processedFilesDir = path.join(__dirname, '/processed_pics/')
+const tempDir = path.join(__dirname, '/temp')
 const fs = require('fs');
 
 app.use(bodyParser.json());
@@ -18,13 +17,11 @@ let imageStream;
 let imageName;
 let imageExtension;
 let processedFilePath;
+let previewFile;
 
 //create folders for uploading and processing
-if (!fs.existsSync(uploadDir)){
-  fs.mkdirSync(uploadDir);
-}
-if (!fs.existsSync(processedFilesDir)){
-  fs.mkdirSync(processedFilesDir);
+if (!fs.existsSync(tempDir)){
+  fs.mkdirSync(tempDir);
 }
 
 //endpoints
@@ -35,20 +32,18 @@ app.post('/api/upload', (req, res) => {
   var form = new formidable.IncomingForm()
   form.multiples = true
   form.keepExtensions = true
-  form.uploadDir = uploadDir
+  form.uploadDir = tempDir
   form.parse(req, (err, fields, files) => {
     if (err) throw err;
   })
   form.on('fileBegin', function (name, file) {
     [imageName, imageExtension] = file.name.split('.')
-    file.path = path.join(uploadDir, `${imageName}.${imageExtension}`)
+    file.path = path.join(tempDir, `${imageName}.${imageExtension}`)
   })
   form.on('file', function (name, file) {
     console.log('Uploaded ' + file.name);
-    imageToProcessFile = path.join(uploadDir, file.name);
-
+    imageToProcessFile = path.join(tempDir, file.name);
     imageStream = sharp(imageToProcessFile);
-
     imageStream.metadata()
       .then((metadata) => {
         imageToProcessMetadata = metadata;
@@ -70,14 +65,27 @@ app.post('/api/imageProcessing', (req, res) => {
       fs.unlink(imageToProcessFile, (err) => {
         if (err) throw err;
       })
+      fs.unlink(previewFile, (err) => {
+        if (err) throw err;
+      })
     })
   })
 })
 
 app.post('/api/getUploadedImage', (req, res) => {
   let params = req.body;
-  console.log(params.filename)
-  res.sendFile(path.join(uploadDir,params.filename))
+  let previewExtension = 'jpg'
+  previewFile = path.join(tempDir, `${imageName}_preview.${previewExtension}`)
+  if(imageToProcessMetadata.width>1000 || imageToProcessMetadata.height>1000)
+  {
+    imageToProcessMetadata.width>=imageToProcessMetadata.height?imageStream.resize({width: 1000}):imageStream.resize({height: 1000})
+   imageStream.toFormat('jpg').toFile(previewFile, (err, info) => {
+      res.sendFile(previewFile)
+    })
+  }
+  else {
+    res.sendFile(previewFile)
+  }
 })
 
 //image processing methods
@@ -98,7 +106,7 @@ performImageProcessing = (params) => {
     JSON.parse(params.addAlpha) ? imageAddAlpha() : null;
 
     // write to file
-    processedFilePath = path.join(processedFilesDir, `${imageName}_converted.${imageExtension}`)
+    processedFilePath = path.join(tempDir, `${imageName}_converted.${imageExtension}`)
     imageStream.toFile(processedFilePath, (err, info) => { resolve(processedFilePath) })
 
 

@@ -67,31 +67,28 @@ class Settings extends React.Component {
 
     return (
       <form className={classes.container} noValidate autoComplete="off">
-        <Grid container alignContent="center" justify="flex-end" spacing={24}>
-          <Grid item xs={12}>{this.props.processedImagePreview}</Grid>
-        </Grid>
-        <Typography variant="h6" className={classes.settingsSubheading}>Zmiana wielkości obrazu</Typography>
-        <Grid container spacing={24}>
-          <Grid item xs={12} sm={6} md={4} lg={3}>
-            <TextField
-              id="resolution"
-              label="Rozdzielczość"
-              className={classes.textField}
-              value={this.props.resolution}
-              onChange={this.handleChange('resolution')}
-              margin="normal"
-              helperText="Zakres 1 - 100%"
-              InputProps={{
-                endAdornment: <InputAdornment position="end">%</InputAdornment>,
-              }}
-              error={this.props.resolutionError}
-              type="Number"
-            />
-          </Grid>
-        </Grid>
-        <Typography variant="h6" className={classes.settingsSubheading}>Operacje na obrazie</Typography>
-        <Grid container spacing={24}>
-          <Grid item xs={12} sm={6} md={4} lg={3}>
+        <Grid container justify="space-between" spacing={8}>
+          
+          <Grid container item xs={12} sm={12} md={6} spacing={24}>
+          <Typography variant="h6" className={classes.settingsSubheading}>Zmiana wielkości obrazu</Typography>
+            <Grid item xs={12}>
+              <TextField
+                id="resolution"
+                label="Rozdzielczość"
+                className={classes.textField}
+                value={this.props.resolution}
+                onChange={this.handleChange('resolution')}
+                margin="normal"
+                helperText="Zakres 1 - 100%"
+                InputProps={{
+                  endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                }}
+                error={this.props.resolutionError}
+                type="Number"
+              />
+            </Grid>
+            <Typography variant="h6" className={classes.settingsSubheading}>Operacje na obrazie</Typography>
+            <Grid item xs={12}>
             <TextField
               id="rotate"
               label="Obrót"
@@ -106,7 +103,7 @@ class Settings extends React.Component {
               type="Number"
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={4} lg={3}>
+          <Grid item xs={12}>
             <TextField
               id="blur"
               label="Rozmycie"
@@ -119,7 +116,7 @@ class Settings extends React.Component {
               type="Number"
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={4} lg={3}>
+          <Grid item xs={12}>
             <TextField
               id="gamma"
               label="Gamma"
@@ -132,9 +129,7 @@ class Settings extends React.Component {
               type="Number"
             />
           </Grid>
-        </Grid>
-        <Grid container spacing={24}>
-          <Grid item xs={12} sm={6} md={4} lg={3}>
+          <Grid item xs={12}>
             <FormGroup row>
               <FormControlLabel
                 control={
@@ -188,9 +183,8 @@ class Settings extends React.Component {
               />
             </FormGroup>
           </Grid>
-        </Grid>
-        <Typography variant="h6" className={classes.settingsSubheading}>Manipulacja kolorów</Typography>
-        {/* <Grid container spacing={24}>
+          <Typography variant="h6" className={classes.settingsSubheading}>Manipulacja kolorów</Typography>
+{/* <Grid container spacing={24}>
         <Grid item xs={12} sm={6} md={4} lg={3}>
         <TextField
         id="colorspace"
@@ -209,8 +203,7 @@ class Settings extends React.Component {
       </TextField>
       </Grid>
       </Grid> */}
-        <Grid container spacing={24}>
-          <Grid item xs={12} sm={6} md={4} lg={3}>
+          <Grid item xs={12}>
             <FormGroup row>
               <FormControlLabel
                 control={
@@ -225,10 +218,8 @@ class Settings extends React.Component {
               />
             </FormGroup>
           </Grid>
-        </Grid>
-        <Typography variant="h6" className={classes.settingsSubheading}>Manipulacja kanałów</Typography>
-        <Grid container spacing={24}>
-          <Grid item xs={12} sm={6} md={4} lg={3}>
+          <Typography variant="h6" className={classes.settingsSubheading}>Manipulacja kanałów</Typography>
+          <Grid item xs={12}>
             <FormGroup row>
               <FormControlLabel
                 control={
@@ -258,7 +249,13 @@ class Settings extends React.Component {
               />
             </FormGroup>
           </Grid>
+          </Grid>
+          <Grid container item xs={12} sm={12} md={6} spacing={24}>
+            <Grid item xs={12}>{this.props.processedImagePreview}</Grid>
+          </Grid>
         </Grid>
+    
+      
         <Grid container spacing={24} className={classes.navButtons}>
           <Grid item xs={12} sm={6} md={4} lg={3}>
             <Button fullWidth variant="outlined" color="secondary" onClick={() => this.props.navigation(0)}>

@@ -9,14 +9,15 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
-const styles = {
+const styles = theme => ({
   card: {
-    maxWidth: 345,
+    //maxWidth: 345,
+    margin: theme.spacing.unit * 3
   },
   media: {
     objectFit: 'cover',
   },
-};
+});
 
 class MediaCard extends React.Component {
     render() {
@@ -28,7 +29,7 @@ class MediaCard extends React.Component {
         component="img"
         
           className={classes.media}
-          image={this.props.imgSrc}
+          image={this.props.imgSrc || 'https://place-hold.it/400.gif'}
           title="Oryginalny plik"
         />
         {/* <CardContent>
@@ -43,10 +44,10 @@ class MediaCard extends React.Component {
       </CardActionArea>
       <CardActions>
         <Button size="small" color="primary">
-          Share
+          Oryginalny
         </Button>
         <Button size="small" color="primary">
-          Learn More
+          Podgląd zmian
         </Button>
       </CardActions>
     </Card>

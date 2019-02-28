@@ -7,7 +7,6 @@ const sharp = require('sharp');
 const formidable = require('formidable');
 const tempDir = path.join(__dirname, '/temp')
 const fs = require('fs');
-const rimraf = require('rimraf')
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -30,7 +29,7 @@ deleteRemainingFiles = () => {
   fs.readdir(tempDir, function(err, files) {
     files.forEach(function(file, index) {
       fs.stat(path.join(tempDir, file), function(err, stat) {
-        var endTime, now;
+        let endTime, now;
         if (err) {
           return console.error(err);
         }
@@ -38,10 +37,8 @@ deleteRemainingFiles = () => {
         //delete older than 10 hours
         endTime = new Date(stat.ctime).getTime() + 36000000;
         if (now > endTime) {
-          return rimraf(path.join(tempDir, file), function(err) {
-            if (err) {
-              return console.error(err);
-            }
+          fs.unlink(path.join(tempDir, file), (err) => {
+            if (err) throw err;
           });
         }
       });
@@ -56,7 +53,7 @@ app.post('/api/upload', (req, res) => {
   imageToProcessFile = null
   imageToProcessMetadata = null;
   imageStream = null;
-  var form = new formidable.IncomingForm()
+  let form = new formidable.IncomingForm()
   form.multiples = true
   form.keepExtensions = true
   form.uploadDir = tempDir
@@ -75,7 +72,6 @@ app.post('/api/upload', (req, res) => {
       .then((metadata) => {
         imageToProcessMetadata = metadata;
         res.send({ metadata })
-        //res.sendFile(imageToProcessFile)
       })
   });
 })
@@ -106,7 +102,7 @@ app.post('/api/getUploadedImage', (req, res) => {
   if(imageToProcessMetadata.width>1000 || imageToProcessMetadata.height>1000)
   {
     imageToProcessMetadata.width>=imageToProcessMetadata.height?imageStream.resize({width: 1000}):imageStream.resize({height: 1000})
-   imageStream.toFormat('jpg').toFile(previewFile, (err, info) => {
+    imageStream.toFormat('jpg').toFile(previewFile, (err, info) => {
       res.sendFile(previewFile)
     })
   }

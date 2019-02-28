@@ -67,6 +67,9 @@ class Settings extends React.Component {
 
     return (
       <form className={classes.container} noValidate autoComplete="off">
+        <Grid container alignContent="center" justify="flex-end" spacing={24}>
+          <Grid item xs={12}>{this.props.processedImagePreview}</Grid>
+        </Grid>
         <Typography variant="h6" className={classes.settingsSubheading}>Zmiana wielkości obrazu</Typography>
         <Grid container spacing={24}>
           <Grid item xs={12} sm={6} md={4} lg={3}>

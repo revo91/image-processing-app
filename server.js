@@ -53,6 +53,7 @@ app.post('/api/upload', (req, res) => {
       .then((metadata) => {
         imageToProcessMetadata = metadata;
         res.send({ metadata })
+        //res.sendFile(imageToProcessFile)
       })
   });
 })
@@ -71,6 +72,12 @@ app.post('/api/imageProcessing', (req, res) => {
       })
     })
   })
+})
+
+app.post('/api/getUploadedImage', (req, res) => {
+  let params = req.body;
+  console.log(params.filename)
+  res.sendFile(path.join(uploadDir,params.filename))
 })
 
 //image processing methods
@@ -132,13 +139,12 @@ imageFlipX = () => {
 imageNegate = () => {
   imageStream
     .negate()
-
 }
 
 imageNormalize = () => {
   imageStream
     .normalize()
-
+    console.log(imageStream)
 }
 
 imageGrayscale = () => {

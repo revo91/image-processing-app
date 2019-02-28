@@ -12,8 +12,7 @@ import SettingsTextFields from './components/Settings';
 import axios from 'axios';
 import { withSnackbar } from 'notistack';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-
+import ImageCard from './components/ImageCard';
 
 
 const styles = theme => ({
@@ -51,6 +50,8 @@ class App extends Component {
     rotateError: false,
     blurError: false,
     gammaError: false,
+    //uploaded image to display
+    uploadedImage: ''
   }
 
   handleStepper = (step) => {
@@ -110,7 +111,6 @@ class App extends Component {
         'Content-Type': 'multipart/form-data'
       }
     }).then((res) => {
-
       if (res.status === 200) {
         this.handleStepper(1)
         let meta = res.data.metadata
@@ -126,7 +126,24 @@ class App extends Component {
         }
         this.setState({ metadata: preparedMeta })
         this.props.closeSnackbar(uploadingInProgressSnackbar)
+        this.requestUploadedImageToDisplay(`${imageName}.${imageExtension}`)
       }
+    })
+  }
+
+  requestUploadedImageToDisplay = (filename) => {
+    let params = new URLSearchParams();
+    params.append('filename', filename);
+    axios({
+      url: '/api/getUploadedImage',
+      method: 'POST',
+      data: params,
+      responseType: 'arraybuffer',
+    }).then(res=> {
+      console.log(res.data)
+      var blob = new Blob([res.data], {type: "image/jpeg"});
+      var url = URL.createObjectURL(blob);
+      this.setState({uploadedImage: url})
     })
   }
 
@@ -184,7 +201,8 @@ class App extends Component {
                   metadata={this.handleMetadata}>
                 </Dropzone>
               </Grid>}
-              metadata={<Grid item xs={12} >
+              metadata={<React.Fragment>
+              <Grid item xs={12} >
                 <Tabs content={{
                   settings:
                     <React.Fragment>
@@ -210,11 +228,14 @@ class App extends Component {
                         rotateError={this.state.rotateError}
                         blurError={this.state.blurError}
                         gammaError={this.state.gammaError}
+                        //images preview
+                        originalImage={<ImageCard imgSrc={this.state.uploadedImage}></ImageCard>}
+                        processedImagePreview={<ImageCard imgSrc={this.state.uploadedImage}></ImageCard>}
                       ></SettingsTextFields>
-
-                    </React.Fragment>, metadata: <MetadataTable metadata={this.state.metadata}></MetadataTable>
+                    </React.Fragment>, 
+                  metadata: <MetadataTable metadata={this.state.metadata}></MetadataTable>
                 }}></Tabs>
-              </Grid>}
+              </Grid></React.Fragment>}
               completedStep={
                 <Grid item xs={12} sm={6} md={4} lg={3}>
                   <Button variant="outlined" color="primary" fullWidth onClick={() => this.handleStepper(0)}>Kolejny plik</Button>

@@ -95,10 +95,10 @@ class App extends Component {
   }
 
   handleSettings = (name, value) => {
-    this.setState({ [name]: value },()=>this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale))
+    //this.setState({ [name]: value },()=>this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale))
     switch (name) {
       case 'resolution':
-        this.setState({ [name]: value, resolutionError: (value >= 1 && value <= 100) || value === '' ? false : true },()=>this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale))
+        this.setState({ [name]: value, resolutionError: (value >= 1 && value <= 100) || value === '' ? false : true })
         break;
       case 'rotate':
         this.setState({ [name]: value, rotateError: (value >= -360 && value <= 360) || value === '' ? false : true },()=>this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale))
@@ -108,6 +108,18 @@ class App extends Component {
         break;
       case 'gamma':
         this.setState({ [name]: value, gammaError: (value >= 1 && value <= 3) || value === '' ? false : true },()=>this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale))
+        break;
+      case 'flipY':
+      case 'flipX':
+      case 'negate':
+      case 'normalize':
+      case 'grayscale':
+        this.setState({ [name]: value },()=>this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale));
+        break;
+      case 'destinationFormat':
+      case 'removeAlpha':
+      case 'addAlpha':
+        this.setState({ [name]: value })
         break;
       default:
         return null;

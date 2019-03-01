@@ -33,7 +33,7 @@ class MediaCard extends React.Component {
         component="img"
         
           className={classes.media}
-          image={this.props.imgSrc || 'https://place-hold.it/400.gif'}
+          image={this.props.imgSrc || 'https://place-hold.it/800x100'}
           title="Podgląd"
         />
         <CardContent className={classes.cardContent}>

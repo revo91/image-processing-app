@@ -81,6 +81,7 @@ class Settings extends React.Component {
                 }}
                 error={this.props.resolutionError}
                 type="Number"
+                disabled={this.props.textFieldsDisabled}
               />
             </Grid>
             <Typography variant="h6" className={classes.settingsSubheading}>Operacje na obrazie</Typography>
@@ -97,6 +98,7 @@ class Settings extends React.Component {
               }}
               error={this.props.rotateError}
               type="Number"
+              disabled={this.props.textFieldsDisabled}
             />
           </Grid>
           <Grid item xs={12}>
@@ -110,6 +112,7 @@ class Settings extends React.Component {
               helperText="Zakres intensywności 1 - 20"
               error={this.props.blurError}
               type="Number"
+              disabled={this.props.textFieldsDisabled}
             />
           </Grid>
           <Grid item xs={12}>
@@ -123,6 +126,7 @@ class Settings extends React.Component {
               helperText="Zakres 1.0 - 3.0"
               error={this.props.gammaError}
               type="Number"
+              disabled={this.props.textFieldsDisabled}
             />
           </Grid>
           <Grid item xs={12}>
@@ -134,6 +138,7 @@ class Settings extends React.Component {
                     onChange={this.handleChange('flipY', true)}
                     value="flipY"
                     color="primary"
+                    disabled={this.props.textFieldsDisabled}
                   />
                 }
                 label="Odwrócenie w poziomie"
@@ -147,6 +152,7 @@ class Settings extends React.Component {
                     onChange={this.handleChange('flipX', true)}
                     value="flipX"
                     color="primary"
+                    disabled={this.props.textFieldsDisabled}
                   />
                 }
                 label="Odwrócenie w pionie"
@@ -160,6 +166,7 @@ class Settings extends React.Component {
                     onChange={this.handleChange('negate', true)}
                     value="negate"
                     color="primary"
+                    disabled={this.props.textFieldsDisabled}
                   />
                 }
                 label="Negatyw"
@@ -173,6 +180,7 @@ class Settings extends React.Component {
                     onChange={this.handleChange('normalize', true)}
                     value="normalize"
                     color="primary"
+                    disabled={this.props.textFieldsDisabled}
                   />
                 }
                 label="Normalizacja"
@@ -189,6 +197,7 @@ class Settings extends React.Component {
                     onChange={this.handleChange('grayscale', true)}
                     value="grayscale"
                     color="primary"
+                    disabled={this.props.textFieldsDisabled}
                   />
                 }
                 label="Skala szarości"
@@ -205,7 +214,8 @@ class Settings extends React.Component {
                     onChange={this.handleChange('removeAlpha', true)}
                     value="removeAlpha"
                     color="primary"
-                    disabled={this.props.addAlpha}
+                    disabled={this.props.addAlpha || this.props.textFieldsDisabled}
+                    
                   />
                 }
                 label="Usuń kanał Alfa"
@@ -219,7 +229,7 @@ class Settings extends React.Component {
                     onChange={this.handleChange('addAlpha', true)}
                     value="addAlpha"
                     color="primary"
-                    disabled={this.props.removeAlpha}
+                    disabled={this.props.removeAlpha || this.props.textFieldsDisabled}
                   />
                 }
                 label="Dodaj kanał Alfa"
@@ -237,6 +247,7 @@ class Settings extends React.Component {
               onChange={this.handleChange('destinationFormat')}
               margin="normal"
               helperText="Pozostaw puste aby zapisać w domyślnym formacie"
+              disabled={this.props.textFieldsDisabled}
               >
               {formats.map(option => (
                 <MenuItem key={option.id} value={option.id}>

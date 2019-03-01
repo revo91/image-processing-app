@@ -58,7 +58,8 @@ class App extends Component {
     previewToggle: 'processingPreview',
     //nextFileButton enabled/disabled,
     nextFileButtonDisabled: false,
-    circularProgress: false
+    circularProgress: false,
+    settingsDisabled: false
   }
 
   handlePreviewToggle = (state) => {
@@ -148,7 +149,7 @@ class App extends Component {
   }
 
   requestUploadedImageToDisplay = () => {
-    this.setState({circularProgress: true})
+    this.setState({circularProgress: true, settingsDisabled: true})
     axios({
       url: '/api/getUploadedImage',
       method: 'POST',
@@ -158,10 +159,10 @@ class App extends Component {
       if(this.state.imageProcessingPreview==='')
       {
         
-        this.setState({ uploadedImage: imgSrc, imageProcessingPreview: imgSrc, circularProgress: false })
+        this.setState({ uploadedImage: imgSrc, imageProcessingPreview: imgSrc, circularProgress: false, settingsDisabled: false })
       }
       else {
-        this.setState({ uploadedImage: imgSrc, circularProgress: false })
+        this.setState({ uploadedImage: imgSrc, circularProgress: false, settingsDisabled: false })
       }
     })
   }
@@ -169,7 +170,7 @@ class App extends Component {
   requestImageProcessingPreview = (rotate, blur, gamma, flipY, flipX, negate, normalize, grayscale) => {
     if((this.state.resolutionError || this.state.rotateError || this.state.blurError || this.state.gammaError)!==true)
     {
-      this.setState({circularProgress: true})
+      this.setState({circularProgress: true, settingsDisabled: true})
       let params = new URLSearchParams();
       params.append('rotate', rotate);
       params.append('blur', blur);
@@ -186,7 +187,7 @@ class App extends Component {
 
       }).then(res=> {
         let imageBinaries = res.data.binary.data
-        this.setState({imageProcessingPreview: `data:image/jpeg;base64,${Buffer.from(imageBinaries).toString('base64')}`, circularProgress: false})
+        this.setState({imageProcessingPreview: `data:image/jpeg;base64,${Buffer.from(imageBinaries).toString('base64')}`, circularProgress: false, settingsDisabled: false})
       })
     }
   }
@@ -254,6 +255,7 @@ class App extends Component {
                   settings:
                     <React.Fragment>
                       <SettingsTextFields
+                        textFieldsDisabled={this.state.settingsDisabled}
                         navigation={this.handleStepper}
                         //handle image settings
                         changeSettings={this.handleSettings}

@@ -19,6 +19,8 @@ let imageExtension;
 let previewExtension = 'jpg'
 let previewBuffer;
 
+sharp.cache(false);
+
 //create folders for uploading and processing
 if (!fs.existsSync(tempDir)){
   fs.mkdirSync(tempDir);

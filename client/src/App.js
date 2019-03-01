@@ -115,7 +115,9 @@ class App extends Component {
   }
 
   handleUpload = (file) => {
-    [imageName, imageExtension] = file.name.split('.')
+    let split = file.name.split('.')
+    imageExtension = split[split.length-1]
+    imageName = file.name.substring(0,file.name.length-imageExtension.length-1)
     let uploadingInProgressSnackbar = this.props.enqueueSnackbar('Wysyłanie pliku...', { variant: 'info', persist: 'true' })
     let imageFile = new FormData();
     imageFile.append('file', file);

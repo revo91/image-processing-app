@@ -21,7 +21,7 @@ const styles = theme => ({
     margin: theme.spacing.unit * 3
   },
   dropzone: {
-    textAlign: "center"
+    textAlign: 'center'
   }
 });
 //uploaded image data
@@ -42,7 +42,7 @@ class App extends Component {
     negate: false,
     normalize: false,
     grayscale: false,
-    colorspace: '',
+    destinationFormat: '',
     removeAlpha: false,
     addAlpha: false,
     //image settings error
@@ -55,7 +55,7 @@ class App extends Component {
     //image preview live,
     imageProcessingPreview: '',
     //previewToggle
-    previewToggle: "processingPreview"
+    previewToggle: 'processingPreview'
   }
 
   handlePreviewToggle = (state) => {
@@ -64,20 +64,25 @@ class App extends Component {
 
   handleStepper = (step) => {
     this.setState({ activeStep: step })
+    let imageParams = [this.state.resolution,
+      this.state.rotate,
+      this.state.blur,
+      this.state.gamma,
+      this.state.flipY,
+      this.state.flipX,
+      this.state.negate,
+      this.state.normalize,
+      this.state.grayscale,
+      this.state.destinationFormat,
+      this.state.removeAlpha,
+      this.state.addAlpha]
+      
     if (step === 2) {
-      this.requestImageProcessing(
-        this.state.resolution,
-        this.state.rotate,
-        this.state.blur,
-        this.state.gamma,
-        this.state.flipY,
-        this.state.flipX,
-        this.state.negate,
-        this.state.normalize,
-        this.state.grayscale,
-        this.state.colorspace,
-        this.state.removeAlpha,
-        this.state.addAlpha)
+      this.requestImageProcessing(...imageParams)
+    }
+    if (step === 0) {
+      this.setState({resolution:'', rotate:'', blur: '', gamma:'', flipY: false, flipX: false, negate: false, 
+      normalize: false, grayscale: false, destinationFormat: '', removeAlpha: false, addAlpha: false, imageProcessingPreview: '', previewToggle: 'processingPreview'})
     }
   }
 
@@ -129,8 +134,8 @@ class App extends Component {
           'Przestrzen': meta.space,
           'Kanały': meta.channels,
           'DPI': meta.density,
-          'Progresywny': meta.isProgressive === true ? "Tak" : "Nie",
-          'Przezroczystość': meta.hasAlpha === true ? "Tak" : "Nie"
+          'Progresywny': meta.isProgressive === true ? 'Tak' : 'Nie',
+          'Przezroczystość': meta.hasAlpha === true ? 'Tak' : 'Nie'
         }
         this.setState({ metadata: preparedMeta })
         this.props.closeSnackbar(uploadingInProgressSnackbar)
@@ -143,16 +148,16 @@ class App extends Component {
     axios({
       url: '/api/getUploadedImage',
       method: 'POST',
-      responseType: 'arraybuffer',
     }).then(res=> {
-      var blob = new Blob([res.data], {type: "image/jpeg"});
-      var url = URL.createObjectURL(blob);
+      let imageBinaries = res.data.binary.data
+      let imgSrc = `data:image/jpeg;base64,${Buffer.from(imageBinaries).toString('base64')}`
       if(this.state.imageProcessingPreview==='')
       {
-        this.setState({ uploadedImage: url, imageProcessingPreview: url })
+        
+        this.setState({ uploadedImage: imgSrc, imageProcessingPreview: imgSrc })
       }
       else {
-        this.setState({ uploadedImage: url })
+        this.setState({ uploadedImage: imgSrc })
       }
       
     })
@@ -173,17 +178,16 @@ class App extends Component {
       axios({
         url: '/api/getImagePreviewLive',
         method: 'POST',
-        responseType: 'arraybuffer',
-        data: params
+        data: params,
+
       }).then(res=> {
-        var blob = new Blob([res.data], {type: "image/jpeg"});
-        var url = URL.createObjectURL(blob);
-        this.setState({imageProcessingPreview: url})
+        let imageBinaries = res.data.binary.data
+        this.setState({imageProcessingPreview: `data:image/jpeg;base64,${Buffer.from(imageBinaries).toString('base64')}`})
       })
     }
   }
 
-    requestImageProcessing = (resolution, rotate, blur, gamma, flipY, flipX, negate, normalize, grayscale, colorspace, removeAlpha, addAlpha) => {
+    requestImageProcessing = (resolution, rotate, blur, gamma, flipY, flipX, negate, normalize, grayscale, format, removeAlpha, addAlpha) => {
       let renderingInProgressSnackbar = this.props.enqueueSnackbar('Trwa renderowanie pliku...', { variant: 'info', persist: 'true' })
       let params = new URLSearchParams();
       params.append('resolution', resolution);
@@ -195,26 +199,26 @@ class App extends Component {
       params.append('negate', negate);
       params.append('normalize', normalize);
       params.append('grayscale', grayscale);
-      params.append('colorspace', colorspace);
+      params.append('format', format);
       params.append('removeAlpha', removeAlpha);
       params.append('addAlpha', addAlpha);
       axios({
         url: '/api/imageProcessing',
         method: 'POST',
-        responseType: 'arraybuffer',
         data: params,
       }).then(res => {
+        let imageBinaries = res.data.binary.data;
+        var bytes = new Uint8Array(imageBinaries);
         this.props.closeSnackbar(renderingInProgressSnackbar)
-        const url = window.URL.createObjectURL(new Blob([res.data]));
+        const url = window.URL.createObjectURL(new Blob([bytes]));
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', `${imageName}_converted.${imageExtension}`);
+        link.setAttribute('download', `${imageName}_converted.${format!==''?format:imageExtension}`);
         document.body.appendChild(link);
         link.click();
       })
     }
   
-
   render() {
     const { classes } = this.props
     return (
@@ -224,9 +228,9 @@ class App extends Component {
         <div className={classes.root}>
           <Grid
             container
-            direction="row"
-            justify="center"
-            alignItems="center"
+            direction='row'
+            justify='center'
+            alignItems='center'
             spacing={24}>
 
             <Stepper
@@ -257,7 +261,7 @@ class App extends Component {
                         negate={this.state.negate}
                         normalize={this.state.normalize}
                         grayscale={this.state.grayscale}
-                        colorspace={this.state.colorspace}
+                        destinationFormat={this.state.destinationFormat}
                         removeAlpha={this.state.removeAlpha}
                         addAlpha={this.state.addAlpha}
                         //errors from child
@@ -266,16 +270,16 @@ class App extends Component {
                         blurError={this.state.blurError}
                         gammaError={this.state.gammaError}
                         //images preview
-                        processedImagePreview={<ImageCard imgSrc={this.state.previewToggle==="processingPreview"?this.state.imageProcessingPreview:this.state.uploadedImage} previewToggle={this.handlePreviewToggle}></ImageCard>}
+                        processedImagePreview={<ImageCard imgSrc={this.state.previewToggle==='processingPreview'?this.state.imageProcessingPreview:this.state.uploadedImage} previewToggle={this.handlePreviewToggle}></ImageCard>}
                       ></SettingsTextFields>
                     </React.Fragment>, 
                   metadata: <MetadataTable metadata={this.state.metadata}></MetadataTable>
                 }}></Tabs>
               </Grid></React.Fragment>}
               completedStep={
-                <Grid container spacing={24} className={classes.navButtons} justify="center">
+                <Grid container spacing={24} className={classes.navButtons} justify='center'>
                 <Grid item xs={12} sm={6} md={4} lg={3}>
-                  <Button variant="contained" color="primary" fullWidth onClick={() => this.handleStepper(0)}>Kolejny plik</Button>
+                  <Button variant='contained' color='primary' fullWidth onClick={() => this.handleStepper(0)}>Kolejny plik</Button>
                 </Grid>
                 </Grid>
               }

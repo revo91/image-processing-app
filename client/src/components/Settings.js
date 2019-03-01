@@ -27,26 +27,22 @@ const styles = theme => ({
   }
 });
 
-const colorspaces = [
+const formats = [
   {
-    id: 'srgb',
-    name: 'sRGB'
+    id: 'jpeg',
+    name: 'JPEG'
   },
   {
-    id: 'rgb',
-    name: 'RGB'
+    id: 'png',
+    name: 'PNG'
   },
   {
-    id: 'cmyk',
-    name: 'CMYK'
+    id: 'webp',
+    name: 'WebP'
   },
   {
-    id: 'lab',
-    name: 'Lab'
-  },
-  {
-    id: 'hsv',
-    name: 'HSV'
+    id: 'tiff',
+    name: 'TIFF'
   }
 ]
 
@@ -184,25 +180,6 @@ class Settings extends React.Component {
             </FormGroup>
           </Grid>
           <Typography variant="h6" className={classes.settingsSubheading}>Manipulacja kolorów</Typography>
-{/* <Grid container spacing={24}>
-        <Grid item xs={12} sm={6} md={4} lg={3}>
-        <TextField
-        id="colorspace"
-        select
-        label="Przestrzeń barw"
-        className={classes.textField}
-        value={this.props.colorspace}
-        onChange={this.handleChange('colorspace')}
-        margin="normal"
-      >
-        {colorspaces.map(option => (
-          <MenuItem key={option.id} value={option.id}>
-            {option.name}
-          </MenuItem>
-        ))}
-      </TextField>
-      </Grid>
-      </Grid> */}
           <Grid item xs={12}>
             <FormGroup row>
               <FormControlLabel
@@ -249,6 +226,25 @@ class Settings extends React.Component {
               />
             </FormGroup>
           </Grid>
+          <Typography variant="h6" className={classes.settingsSubheading}>Zapisz jako</Typography>
+            <Grid item xs={12}>
+              <TextField
+              id="colorspace"
+              select
+              label="Format"
+              className={classes.textField}
+              value={this.props.destinationFormat}
+              onChange={this.handleChange('destinationFormat')}
+              margin="normal"
+              helperText="Pozostaw puste aby zapisać w domyślnym formacie"
+              >
+              {formats.map(option => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.name}
+                </MenuItem>
+              ))}
+            </TextField>
+        </Grid>
           </Grid>
           <Grid container item xs={12} sm={12} md={6} spacing={24}>
             <Grid item xs={12}>

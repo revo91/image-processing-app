@@ -16,10 +16,8 @@ let imageToProcessMetadata;
 let imageStream;
 let imageName;
 let imageExtension;
-let processedFilePath;
-let previewFile;
 let previewExtension = 'jpg'
-let processedPreviewFile;
+let previewBuffer;
 
 //create folders for uploading and processing
 if (!fs.existsSync(tempDir)){
@@ -49,7 +47,6 @@ deleteRemainingFiles = () => {
 }
 setInterval(()=>deleteRemainingFiles(),36000000);
 
-
 //endpoints
 app.post('/api/upload', (req, res) => {
   imageToProcessFile = null
@@ -63,11 +60,11 @@ app.post('/api/upload', (req, res) => {
     if (err) throw err;
   })
   form.on('fileBegin', function (name, file) {
+    imageToProcessFile = file.path;
     [imageName, imageExtension] = file.name.split('.')
     file.path = path.join(tempDir, `${imageName}.${imageExtension}`)
   })
   form.on('file', function (name, file) {
-    console.log('Uploaded ' + file.name);
     imageToProcessFile = path.join(tempDir, file.name);
     imageStream = sharp(imageToProcessFile);
     imageStream.metadata()
@@ -78,45 +75,42 @@ app.post('/api/upload', (req, res) => {
   });
 })
 
-
 app.post('/api/imageProcessing', (req, res) => {
   let params = req.body;
   performImageProcessing(params).then((out) => {
-    res.sendFile(out)
+    res.send({binary: out})
     res.on('finish',()=>{
-      fs.unlink(out, (err) => {
-        if (err) throw err;
-      });
       fs.unlink(imageToProcessFile, (err) => {
         if (err) throw err;
-      })
+      });
     })
   })
 })
 
 app.post('/api/getUploadedImage', (req, res) => {
-  previewFile = path.join(tempDir, `${imageName}_preview.${previewExtension}`)
+  //previewBuffer holds resized buffer for live preview
+  previewBuffer = sharp(imageToProcessFile)
   if(imageToProcessMetadata.width>1000 || imageToProcessMetadata.height>1000)
   {
-    imageToProcessMetadata.width>=imageToProcessMetadata.height?imageStream.resize({width: 1000}):imageStream.resize({height: 1000})
-    imageStream.toFormat(previewExtension).toFile(previewFile, (err, info) => {
-      res.sendFile(previewFile)
+    imageToProcessMetadata.width>=imageToProcessMetadata.height?previewBuffer.resize({width: 1000}):previewBuffer.resize({height: 1000})
+    previewBuffer.toFormat(previewExtension).toBuffer((err, data, info)=> {
+      previewBuffer = data
+      res.send({binary: data})
     })
   }
   else {
-    res.sendFile(previewFile)
+    previewBuffer.toFormat(previewExtension).toBuffer((err, data, info)=> {
+      previewBuffer = data
+      res.send({binary: data})
+    })
   }
 })
 
 app.post('/api/getImagePreviewLive', (req, res) => {
   let params = req.body;
   performImagePreview(params).then((outputFile) => {
-    res.sendFile(outputFile)
+    res.send({binary: outputFile})
   })
-  
-  //zrobic zeby za kazdym wyborem ustawien byl odpytywany ten endpoint na previewFile i .toFile
-    
-    
 })
 
 //image processing methods
@@ -127,25 +121,29 @@ performImageProcessing = (params) => {
     params.rotate !== '' ? imageRotate(params.rotate) : null;
     params.blur !== '' ? imageBlur(params.blur) : null;
     params.gamma !== '' ? imageGamma(params.gamma) : null;
+    params.format !== '' ? imageFormat(params.format) : null;
     JSON.parse(params.flipY) ? imageFlipY() : null;
     JSON.parse(params.flipX) ? imageFlipX() : null;
     JSON.parse(params.negate) ? imageNegate() : null;
     JSON.parse(params.normalize) ? imageNormalize() : null;
     JSON.parse(params.grayscale) ? imageGrayscale() : null;
-    params.colorspace !== '' ? imageColorspace(params.colorspace) : null;
     JSON.parse(params.removeAlpha) ? imageRemoveAlpha() : null;
     JSON.parse(params.addAlpha) ? imageAddAlpha() : null;
 
     // write to file
-    processedFilePath = path.join(tempDir, `${imageName}_converted.${imageExtension}`)
-    imageStream.toFile(processedFilePath, (err, info) => { resolve(processedFilePath) })
+    // processedFilePath = path.join(tempDir, `${imageName}_converted.${imageExtension}`)
+    // imageStream.toFile(processedFilePath, (err, info) => { resolve(processedFilePath) })
+    imageStream.toBuffer((err, data, info) => {
+      resolve(data)
+    })
+    
   })
 }
 
 performImagePreview = (params) => {
-  imageStream = sharp(previewFile)
+  imageStream = sharp(previewBuffer)
   return new Promise(function (resolve, reject) {
-  params.rotate !== '' ? imageRotate(params.rotate) : null;
+    params.rotate !== '' ? imageRotate(params.rotate) : null;
     params.blur !== '' ? imageBlur(params.blur) : null;
     params.gamma !== '' ? imageGamma(params.gamma) : null;
     JSON.parse(params.flipY) ? imageFlipY() : null;
@@ -153,10 +151,11 @@ performImagePreview = (params) => {
     JSON.parse(params.negate) ? imageNegate() : null;
     JSON.parse(params.normalize) ? imageNormalize() : null;
     JSON.parse(params.grayscale) ? imageGrayscale() : null;
-
-    processedPreviewFile = path.join(tempDir, `${imageName}_processingInProgress.${previewExtension}`)
-    imageStream.toFile(processedPreviewFile, (err, info) => {
-      resolve(processedPreviewFile)
+    // imageStream.toFile(processedPreviewFile, (err, info) => {
+    //   resolve(processedPreviewFile)
+    // })
+    imageStream.toBuffer((err, data, info)=> {
+      resolve(data)
     })
   })
 }
@@ -200,32 +199,31 @@ imageNegate = () => {
 imageNormalize = () => {
   imageStream
     .normalize()
-    console.log(imageStream)
 }
 
 imageGrayscale = () => {
   imageStream
     .grayscale()
-
 }
 
 imageColorspace = (colorspace) => {
-  console.log(colorspace)
   imageStream
     .toColorspace(colorspace)
+}
 
+imageFormat = (format) => {
+  imageStream
+    .toFormat(format)
 }
 
 imageRemoveAlpha = () => {
   imageStream
     .removeAlpha()
-
 }
 
 imageAddAlpha = () => {
   imageStream
     .ensureAlpha()
-
 }
 
 if (process.env.NODE_ENV === 'production') {

@@ -25,7 +25,7 @@ class MyDropzone extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <Dropzone maxSize={10240000} onDrop={this.onDrop} multiple={false} accept=".jpg,.jpeg,.png,.tif,.tiff ">
+      <Dropzone maxSize={10240000} onDrop={this.onDrop} multiple={false} accept=".jpg,.jpeg,.png,.tif,.tiff " >
         {({ getRootProps, getInputProps, isDragActive }) => {
           return (
             <div

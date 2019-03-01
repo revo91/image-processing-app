@@ -16,7 +16,6 @@ let imageToProcessMetadata;
 let imageStream;
 let imageName;
 let imageExtension;
-let previewExtension = 'jpg'
 let previewBuffer;
 
 sharp.cache(false);
@@ -95,13 +94,16 @@ app.post('/api/getUploadedImage', (req, res) => {
   if(imageToProcessMetadata.width>1000 || imageToProcessMetadata.height>1000)
   {
     imageToProcessMetadata.width>=imageToProcessMetadata.height?previewBuffer.resize({width: 1000}):previewBuffer.resize({height: 1000})
-    previewBuffer.toFormat(previewExtension).toBuffer((err, data, info)=> {
+    previewBuffer.jpeg({
+      quality: 40}).toBuffer((err, data, info)=> {
       previewBuffer = data
       res.send({binary: data})
     })
   }
   else {
-    previewBuffer.toFormat(previewExtension).toBuffer((err, data, info)=> {
+    previewBuffer.jpeg({
+      quality: 10})
+    .toBuffer((err, data, info)=> {
       previewBuffer = data
       res.send({binary: data})
     })
@@ -156,7 +158,8 @@ performImagePreview = (params) => {
     // imageStream.toFile(processedPreviewFile, (err, info) => {
     //   resolve(processedPreviewFile)
     // })
-    imageStream.toBuffer((err, data, info)=> {
+    imageStream.jpeg({
+      quality: 40}).toBuffer((err, data, info)=> {
       resolve(data)
     })
   })

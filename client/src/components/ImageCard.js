@@ -7,7 +7,8 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Typography from '@material-ui/core/Typography'
 
 const styles = theme => ({
   card: {
@@ -17,6 +18,9 @@ const styles = theme => ({
   media: {
     objectFit: 'cover',
   },
+  cardContent: {
+    padding: 0
+  }
 });
 
 class MediaCard extends React.Component {
@@ -32,15 +36,9 @@ class MediaCard extends React.Component {
           image={this.props.imgSrc || 'https://place-hold.it/400.gif'}
           title="Podgląd"
         />
-        {/* <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">
-            Lizard
-          </Typography>
-          <Typography component="p">
-            Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging
-            across all continents except Antarctica
-          </Typography>
-        </CardContent> */}
+        <CardContent className={classes.cardContent}>
+          {this.props.circularProgress===true?<CircularProgress className={classes.card}></CircularProgress>:null}
+        </CardContent>
       </CardActionArea>
       <CardActions>
         <Button size="small" color="primary" onClick={()=>this.props.previewToggle('originalPreview')}>

@@ -55,7 +55,10 @@ class App extends Component {
     //image preview live,
     imageProcessingPreview: '',
     //previewToggle
-    previewToggle: 'processingPreview'
+    previewToggle: 'processingPreview',
+    //nextFileButton enabled/disabled,
+    nextFileButtonDisabled: false,
+    circularProgress: false
   }
 
   handlePreviewToggle = (state) => {
@@ -145,6 +148,7 @@ class App extends Component {
   }
 
   requestUploadedImageToDisplay = () => {
+    this.setState({circularProgress: true})
     axios({
       url: '/api/getUploadedImage',
       method: 'POST',
@@ -154,18 +158,18 @@ class App extends Component {
       if(this.state.imageProcessingPreview==='')
       {
         
-        this.setState({ uploadedImage: imgSrc, imageProcessingPreview: imgSrc })
+        this.setState({ uploadedImage: imgSrc, imageProcessingPreview: imgSrc, circularProgress: false })
       }
       else {
-        this.setState({ uploadedImage: imgSrc })
+        this.setState({ uploadedImage: imgSrc, circularProgress: false })
       }
-      
     })
   }
 
   requestImageProcessingPreview = (rotate, blur, gamma, flipY, flipX, negate, normalize, grayscale) => {
     if((this.state.resolutionError || this.state.rotateError || this.state.blurError || this.state.gammaError)!==true)
     {
+      this.setState({circularProgress: true})
       let params = new URLSearchParams();
       params.append('rotate', rotate);
       params.append('blur', blur);
@@ -182,13 +186,14 @@ class App extends Component {
 
       }).then(res=> {
         let imageBinaries = res.data.binary.data
-        this.setState({imageProcessingPreview: `data:image/jpeg;base64,${Buffer.from(imageBinaries).toString('base64')}`})
+        this.setState({imageProcessingPreview: `data:image/jpeg;base64,${Buffer.from(imageBinaries).toString('base64')}`, circularProgress: false})
       })
     }
   }
 
     requestImageProcessing = (resolution, rotate, blur, gamma, flipY, flipX, negate, normalize, grayscale, format, removeAlpha, addAlpha) => {
       let renderingInProgressSnackbar = this.props.enqueueSnackbar('Trwa renderowanie pliku...', { variant: 'info', persist: 'true' })
+      this.setState({nextFileButtonDisabled: true})
       let params = new URLSearchParams();
       params.append('resolution', resolution);
       params.append('rotate', rotate);
@@ -210,6 +215,7 @@ class App extends Component {
         let imageBinaries = res.data.binary.data;
         var bytes = new Uint8Array(imageBinaries);
         this.props.closeSnackbar(renderingInProgressSnackbar)
+        this.setState({nextFileButtonDisabled: false})
         const url = window.URL.createObjectURL(new Blob([bytes]));
         const link = document.createElement('a');
         link.href = url;
@@ -270,7 +276,9 @@ class App extends Component {
                         blurError={this.state.blurError}
                         gammaError={this.state.gammaError}
                         //images preview
-                        processedImagePreview={<ImageCard imgSrc={this.state.previewToggle==='processingPreview'?this.state.imageProcessingPreview:this.state.uploadedImage} previewToggle={this.handlePreviewToggle}></ImageCard>}
+                        processedImagePreview={<ImageCard imgSrc={this.state.previewToggle==='processingPreview'?this.state.imageProcessingPreview:this.state.uploadedImage} 
+                        previewToggle={this.handlePreviewToggle}
+                        circularProgress={this.state.circularProgress}></ImageCard>}
                       ></SettingsTextFields>
                     </React.Fragment>, 
                   metadata: <MetadataTable metadata={this.state.metadata}></MetadataTable>
@@ -279,7 +287,7 @@ class App extends Component {
               completedStep={
                 <Grid container spacing={24} className={classes.navButtons} justify='center'>
                 <Grid item xs={12} sm={6} md={4} lg={3}>
-                  <Button variant='contained' color='primary' fullWidth onClick={() => this.handleStepper(0)}>Kolejny plik</Button>
+                  <Button variant='contained' color='primary' fullWidth onClick={() => this.handleStepper(0)} disabled={this.state.nextFileButtonDisabled}>Kolejny plik</Button>
                 </Grid>
                 </Grid>
               }

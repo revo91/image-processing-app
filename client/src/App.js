@@ -101,13 +101,13 @@ class App extends Component {
         this.setState({ [name]: value, resolutionError: (value >= 1 && value <= 100) || value === '' ? false : true })
         break;
       case 'rotate':
-        this.setState({ [name]: value, rotateError: (value >= -360 && value <= 360) || value === '' ? false : true },()=>this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale))
+        this.setState({ [name]: value, rotateError: (value >= -360 && value <= 360) || value === '' ? false : true },()=>setTimeout(()=>this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale),2000))
         break;
       case 'blur':
-        this.setState({ [name]: value, blurError: (value >= 1 && value <= 20) || value === '' ? false : true },()=>this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale))
+        this.setState({ [name]: value, blurError: (value >= 1 && value <= 20) || value === '' ? false : true },()=>setTimeout(()=>this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale),2000))
         break;
       case 'gamma':
-        this.setState({ [name]: value, gammaError: (value >= 1 && value <= 3) || value === '' ? false : true },()=>this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale))
+        this.setState({ [name]: value, gammaError: (value >= 1 && value <= 3) || value === '' ? false : true },()=>setTimeout(()=>this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale),2000))
         break;
       case 'flipY':
       case 'flipX':

@@ -18,14 +18,14 @@ class MyDropzone extends React.Component {
       this.props.acceptedFile(acceptedFiles[0])
     }
     else {
-      this.props.enqueueSnackbar('Nieobsługiwany format lub rozmiar pliku (>3 MB).', { variant: 'error' })
+      this.props.enqueueSnackbar('Nieobsługiwany format lub rozmiar pliku (>5 MB).', { variant: 'error' })
     }
   }
 
   render() {
     const { classes } = this.props;
     return (
-      <Dropzone maxSize={3072000} onDrop={this.onDrop} multiple={false} accept=".jpg,.jpeg,.png,.tif,.tiff " >
+      <Dropzone maxSize={5120000} onDrop={this.onDrop} multiple={false} accept=".jpg,.jpeg,.png,.tif,.tiff " >
         {({ getRootProps, getInputProps, isDragActive }) => {
           return (
             <div

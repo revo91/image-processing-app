@@ -24,33 +24,32 @@ const styles = theme => ({
 });
 
 class MediaCard extends React.Component {
-    render() {
-        const { classes } = this.props;
-        return(
-        <Card className={classes.card}>
-      <CardActionArea>
-        <CardMedia
-        component="img"
-        
-          className={classes.media}
-          image={this.props.imgSrc || 'https://place-hold.it/800x100'}
-          title="Podgląd"
-        />
-        <CardContent className={classes.cardContent}>
-          {this.props.circularProgress===true?<CircularProgress className={classes.card}></CircularProgress>:null}
-        </CardContent>
-      </CardActionArea>
-      <CardActions>
-        <Button size="small" color="primary" onClick={()=>this.props.previewToggle('originalPreview')}>
-          Oryginalny
+  render() {
+    const { classes } = this.props;
+    return (
+      <Card className={classes.card}>
+        <CardActionArea>
+          <CardMedia
+            component="img"
+            className={classes.media}
+            image={this.props.imgSrc || 'https://place-hold.it/800x100'}
+            title="Podgląd"
+          />
+          <CardContent className={classes.cardContent}>
+            {this.props.circularProgress === true ? <CircularProgress className={classes.card}></CircularProgress> : null}
+          </CardContent>
+        </CardActionArea>
+        <CardActions>
+          <Button size="small" color="primary" onClick={() => this.props.previewToggle('originalPreview')}>
+            Oryginalny
         </Button>
-        <Button size="small" color="primary" onClick={()=>this.props.previewToggle('processingPreview')}>
-          Podgląd zmian
+          <Button size="small" color="primary" onClick={() => this.props.previewToggle('processingPreview')}>
+            Podgląd zmian
         </Button>
-      </CardActions>
-    </Card>
-        )
-    }
+        </CardActions>
+      </Card>
+    )
+  }
 }
 
 MediaCard.propTypes = {

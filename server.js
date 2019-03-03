@@ -21,15 +21,15 @@ let previewBuffer;
 sharp.cache(false);
 
 //create folders for uploading and processing
-if (!fs.existsSync(tempDir)){
+if (!fs.existsSync(tempDir)) {
   fs.mkdirSync(tempDir);
 }
 
 //delete left-off files every 10 hours
 deleteRemainingFiles = () => {
-  fs.readdir(tempDir, function(err, files) {
-    files.forEach(function(file, index) {
-      fs.stat(path.join(tempDir, file), function(err, stat) {
+  fs.readdir(tempDir, function (err, files) {
+    files.forEach(function (file, index) {
+      fs.stat(path.join(tempDir, file), function (err, stat) {
         let endTime, now;
         if (err) {
           return console.error(err);
@@ -46,7 +46,7 @@ deleteRemainingFiles = () => {
     });
   });
 }
-setInterval(()=>deleteRemainingFiles(),36000000);
+setInterval(() => deleteRemainingFiles(), 36000000);
 
 //endpoints
 app.post('/api/upload', (req, res) => {
@@ -63,8 +63,8 @@ app.post('/api/upload', (req, res) => {
   form.on('fileBegin', function (name, file) {
     imageToProcessFile = file.path;
     let split = file.name.split('.')
-    imageExtension = split[split.length-1]
-    imageName = file.name.substring(0,file.name.length-imageExtension.length-1)
+    imageExtension = split[split.length - 1]
+    imageName = file.name.substring(0, file.name.length - imageExtension.length - 1)
 
     file.path = path.join(tempDir, `${imageName}.${imageExtension}`)
   })
@@ -82,8 +82,8 @@ app.post('/api/upload', (req, res) => {
 app.post('/api/imageProcessing', (req, res) => {
   let params = req.body;
   performImageProcessing(params).then((out) => {
-    res.send({binary: out})
-    res.on('finish',()=>{
+    res.send({ binary: out })
+    res.on('finish', () => {
       fs.unlink(imageToProcessFile, (err) => {
         if (err) throw err;
       });
@@ -94,29 +94,30 @@ app.post('/api/imageProcessing', (req, res) => {
 app.post('/api/getUploadedImage', (req, res) => {
   //previewBuffer holds resized buffer for live preview
   previewBuffer = sharp(imageToProcessFile)
-  if(imageToProcessMetadata.width>1000 || imageToProcessMetadata.height>1000)
-  {
-    imageToProcessMetadata.width>=imageToProcessMetadata.height?previewBuffer.resize({width: 1000}):previewBuffer.resize({height: 1000})
+  if (imageToProcessMetadata.width > 1000 || imageToProcessMetadata.height > 1000) {
+    imageToProcessMetadata.width >= imageToProcessMetadata.height ? previewBuffer.resize({ width: 1000 }) : previewBuffer.resize({ height: 1000 })
     previewBuffer.jpeg({
-      quality: 40}).toBuffer((err, data, info)=> {
+      quality: 40
+    }).toBuffer((err, data, info) => {
       previewBuffer = data
-      res.send({binary: data})
+      res.send({ binary: data })
     })
   }
   else {
     previewBuffer.jpeg({
-      quality: 10})
-    .toBuffer((err, data, info)=> {
-      previewBuffer = data
-      res.send({binary: data})
+      quality: 10
     })
+      .toBuffer((err, data, info) => {
+        previewBuffer = data
+        res.send({ binary: data })
+      })
   }
 })
 
 app.post('/api/getImagePreviewLive', (req, res) => {
   let params = req.body;
   performImagePreview(params).then((outputFile) => {
-    res.send({binary: outputFile})
+    res.send({ binary: outputFile })
   })
 })
 
@@ -143,7 +144,7 @@ performImageProcessing = (params) => {
     imageStream.toBuffer((err, data, info) => {
       resolve(data)
     })
-    
+
   })
 }
 
@@ -162,7 +163,8 @@ performImagePreview = (params) => {
     //   resolve(processedPreviewFile)
     // })
     imageStream.jpeg({
-      quality: 40}).toBuffer((err, data, info)=> {
+      quality: 40
+    }).toBuffer((err, data, info) => {
       resolve(data)
     })
   })

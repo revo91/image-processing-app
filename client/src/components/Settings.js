@@ -136,7 +136,7 @@ class Settings extends React.Component {
                 value={this.props.sharpen}
                 onChange={this.handleChange('sharpen')}
                 margin="normal"
-                helperText="Zakres 1.0 - 10.0"
+                helperText="Zakres 1.0 - 50.0"
                 error={this.props.sharpenError}
                 type="Number"
                 disabled={this.props.textFieldsDisabled}

@@ -37,6 +37,7 @@ class App extends Component {
     rotate: '',
     blur: '',
     gamma: '',
+    sharpen: '',
     flipY: false,
     flipX: false,
     negate: false,
@@ -50,6 +51,7 @@ class App extends Component {
     rotateError: false,
     blurError: false,
     gammaError: false,
+    sharpenError: false,
     //uploaded image to display
     uploadedImage: '',
     //image preview live,
@@ -72,6 +74,7 @@ class App extends Component {
     this.state.rotate,
     this.state.blur,
     this.state.gamma,
+    this.state.sharpen,
     this.state.flipY,
     this.state.flipX,
     this.state.negate,
@@ -86,7 +89,7 @@ class App extends Component {
     }
     if (step === 0) {
       this.setState({
-        resolution: '', rotate: '', blur: '', gamma: '', flipY: false, flipX: false, negate: false,
+        resolution: '', rotate: '', blur: '', gamma: '', sharpen: '', flipY: false, flipX: false, negate: false,
         normalize: false, grayscale: false, destinationFormat: '', removeAlpha: false, addAlpha: false, imageProcessingPreview: '', previewToggle: 'processingPreview'
       })
     }
@@ -103,20 +106,23 @@ class App extends Component {
         this.setState({ [name]: value, resolutionError: (value >= 1 && value <= 100) || value === '' ? false : true })
         break;
       case 'rotate':
-        this.setState({ [name]: value, rotateError: (value >= -360 && value <= 360) || value === '' ? false : true }, () => setTimeout(() => this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale), 2000))
+        this.setState({ [name]: value, rotateError: (value >= -360 && value <= 360) || value === '' ? false : true }, () => setTimeout(() => this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.sharpen, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale), 2000))
         break;
       case 'blur':
-        this.setState({ [name]: value, blurError: (value >= 1 && value <= 20) || value === '' ? false : true }, () => setTimeout(() => this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale), 2000))
+        this.setState({ [name]: value, blurError: (value >= 1 && value <= 20) || value === '' ? false : true }, () => setTimeout(() => this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.sharpen, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale), 2000))
         break;
       case 'gamma':
-        this.setState({ [name]: value, gammaError: (value >= 1 && value <= 3) || value === '' ? false : true }, () => setTimeout(() => this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale), 2000))
+        this.setState({ [name]: value, gammaError: (value >= 1 && value <= 3) || value === '' ? false : true }, () => setTimeout(() => this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.sharpen, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale), 2000))
+        break;
+      case 'sharpen':
+        this.setState({ [name]: value, sharpenError: (value >= 1 && value <= 50) || value === '' ? false : true }, () => setTimeout(() => this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.sharpen, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale), 2000))
         break;
       case 'flipY':
       case 'flipX':
       case 'negate':
       case 'normalize':
       case 'grayscale':
-        this.setState({ [name]: value }, () => this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale));
+        this.setState({ [name]: value }, () => this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.sharpen, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale));
         break;
       case 'destinationFormat':
       case 'removeAlpha':
@@ -181,13 +187,14 @@ class App extends Component {
     })
   }
 
-  requestImageProcessingPreview = (rotate, blur, gamma, flipY, flipX, negate, normalize, grayscale) => {
-    if ((this.state.resolutionError || this.state.rotateError || this.state.blurError || this.state.gammaError) !== true) {
+  requestImageProcessingPreview = (rotate, blur, gamma, sharpen, flipY, flipX, negate, normalize, grayscale) => {
+    if ((this.state.resolutionError || this.state.rotateError || this.state.blurError || this.state.gammaError || this.state.sharpenError) !== true) {
       this.setState({ circularProgress: true, settingsDisabled: true })
       let params = new URLSearchParams();
       params.append('rotate', rotate);
       params.append('blur', blur);
       params.append('gamma', gamma);
+      params.append('sharpen', sharpen);
       params.append('flipY', flipY);
       params.append('flipX', flipX);
       params.append('negate', negate);
@@ -204,7 +211,7 @@ class App extends Component {
     }
   }
 
-  requestImageProcessing = (resolution, rotate, blur, gamma, flipY, flipX, negate, normalize, grayscale, format, removeAlpha, addAlpha) => {
+  requestImageProcessing = (resolution, rotate, blur, gamma, sharpen, flipY, flipX, negate, normalize, grayscale, format, removeAlpha, addAlpha) => {
     let renderingInProgressSnackbar = this.props.enqueueSnackbar('Trwa renderowanie pliku...', { variant: 'info', persist: 'true' })
     this.setState({ nextFileButtonDisabled: true })
     let params = new URLSearchParams();
@@ -212,6 +219,7 @@ class App extends Component {
     params.append('rotate', rotate);
     params.append('blur', blur);
     params.append('gamma', gamma);
+    params.append('sharpen', sharpen);
     params.append('flipY', flipY);
     params.append('flipX', flipX);
     params.append('negate', negate);
@@ -243,7 +251,6 @@ class App extends Component {
     return (
       <React.Fragment>
         <AppBar></AppBar>
-
         <div className={classes.root}>
           <Grid
             container
@@ -251,7 +258,6 @@ class App extends Component {
             justify='center'
             alignItems='center'
             spacing={24}>
-
             <Stepper
               activeStep={this.state.activeStep}
               uploadForm={<Grid item xs={12} >
@@ -276,6 +282,7 @@ class App extends Component {
                           rotate={this.state.rotate}
                           blur={this.state.blur}
                           gamma={this.state.gamma}
+                          sharpen={this.state.sharpen}
                           flipY={this.state.flipY}
                           flipX={this.state.flipX}
                           negate={this.state.negate}
@@ -289,6 +296,7 @@ class App extends Component {
                           rotateError={this.state.rotateError}
                           blurError={this.state.blurError}
                           gammaError={this.state.gammaError}
+                          sharpenError={this.state.sharpenError}
                           //images preview
                           processedImagePreview={<ImageCard imgSrc={this.state.previewToggle === 'processingPreview' ? this.state.imageProcessingPreview : this.state.uploadedImage}
                             previewToggle={this.handlePreviewToggle}

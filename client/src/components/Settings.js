@@ -54,7 +54,6 @@ class Settings extends React.Component {
     }
     else {
       this.props.changeSettings(name, event.target.value);
-
     }
   };
 
@@ -130,6 +129,20 @@ class Settings extends React.Component {
               />
             </Grid>
             <Grid item xs={12}>
+              <TextField
+                id="sharpen"
+                label="Wyostrzenie"
+                className={classes.textField}
+                value={this.props.sharpen}
+                onChange={this.handleChange('sharpen')}
+                margin="normal"
+                helperText="Zakres 1.0 - 10.0"
+                error={this.props.sharpenError}
+                type="Number"
+                disabled={this.props.textFieldsDisabled}
+              />
+            </Grid>
+            <Grid item xs={12}>
               <FormGroup row>
                 <FormControlLabel
                   control={
@@ -186,6 +199,7 @@ class Settings extends React.Component {
                   label="Normalizacja"
                 />
               </FormGroup>
+              
             </Grid>
             <Typography variant="h6" className={classes.settingsSubheading}>Manipulacja kolorów</Typography>
             <Grid item xs={12}>

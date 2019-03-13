@@ -126,10 +126,11 @@ performImageProcessing = (params) => {
   imageStream = sharp(imageToProcessFile)
   return new Promise(function (resolve, reject) {
     params.resolution !== '' ? imageResize(params.resolution) : null;
+    params.format !== '' ? imageFormat(params.format) : null;
     params.rotate !== '' ? imageRotate(params.rotate) : null;
     params.blur !== '' ? imageBlur(params.blur) : null;
     params.gamma !== '' ? imageGamma(params.gamma) : null;
-    params.format !== '' ? imageFormat(params.format) : null;
+    params.sharpen !== '' ? imageSharpen(params.sharpen) : null;
     JSON.parse(params.flipY) ? imageFlipY() : null;
     JSON.parse(params.flipX) ? imageFlipX() : null;
     JSON.parse(params.negate) ? imageNegate() : null;
@@ -154,6 +155,7 @@ performImagePreview = (params) => {
     params.rotate !== '' ? imageRotate(params.rotate) : null;
     params.blur !== '' ? imageBlur(params.blur) : null;
     params.gamma !== '' ? imageGamma(params.gamma) : null;
+    params.sharpen !== '' ? imageSharpen(params.sharpen) : null;
     JSON.parse(params.flipY) ? imageFlipY() : null;
     JSON.parse(params.flipX) ? imageFlipX() : null;
     JSON.parse(params.negate) ? imageNegate() : null;
@@ -172,23 +174,28 @@ performImagePreview = (params) => {
 
 imageResize = (widthPercent) => {
   imageStream
-    .resize({ width: Math.round(parseInt(widthPercent) * 0.01 * imageToProcessMetadata.width) })
+    .resize({ width: Math.round(parseFloat(widthPercent) * 0.01 * imageToProcessMetadata.width) })
 }
 
 imageRotate = (angle) => {
   imageStream
-    .rotate(parseInt(angle))
+    .rotate(parseFloat(angle))
 
 }
 
 imageBlur = (intensity) => {
   imageStream
-    .blur(parseInt(intensity))
+    .blur(parseFloat(intensity))
 }
 
 imageGamma = (intensity) => {
   imageStream
-    .gamma(parseInt(intensity))
+    .gamma(parseFloat(intensity))
+}
+
+imageSharpen = (intensity) => {
+  imageStream
+    .sharpen(parseFloat(intensity),3,3)
 }
 
 imageFlipY = () => {

@@ -34,7 +34,6 @@ class MyDropzone extends React.Component {
             >
               <input {...getInputProps()} />
               {
-
                 <div><CloudUploadIcon color="primary" className={classes.uploadIcon}></CloudUploadIcon>
                   <Typography variant="h5" gutterBottom>
                     {!isDragActive ? "Przeciągnij lub wybierz plik graficzny" : "Upuść tutaj"}

@@ -131,22 +131,34 @@ performImageProcessing = (params) => {
     params.blur !== '' ? imageBlur(params.blur) : null;
     params.gamma !== '' ? imageGamma(params.gamma) : null;
     params.sharpen !== '' ? imageSharpen(params.sharpen) : null;
+    params.median !== '' ? imageMedian(params.median) : null;
     JSON.parse(params.flipY) ? imageFlipY() : null;
     JSON.parse(params.flipX) ? imageFlipX() : null;
     JSON.parse(params.negate) ? imageNegate() : null;
     JSON.parse(params.normalize) ? imageNormalize() : null;
     JSON.parse(params.grayscale) ? imageGrayscale() : null;
+    JSON.parse(params.linear) ? imageLinear() : null;
     JSON.parse(params.removeAlpha) ? imageRemoveAlpha() : null;
     JSON.parse(params.addAlpha) ? imageAddAlpha() : null;
-
-    // write to file
-    // processedFilePath = path.join(tempDir, `${imageName}_converted.${imageExtension}`)
-    // imageStream.toFile(processedFilePath, (err, info) => { resolve(processedFilePath) })
+    JSON.parse(params.doRecomb) ? imageRecomb(params.recomb) : null;
+    JSON.parse(params.doConvolve) ? imageConvolve(params.convolve) : null;
+  
     imageStream.toBuffer((err, data, info) => {
       resolve(data)
     })
-
   })
+}
+
+chunkArray = (myArray, chunk_size) => {
+  var index = 0;
+  var arrayLength = myArray.length;
+  var tempArray = [];
+
+  for (index = 0; index < arrayLength; index += chunk_size) {
+    myChunk = myArray.slice(index, index + chunk_size);
+    tempArray.push(myChunk);
+  }
+  return tempArray;
 }
 
 performImagePreview = (params) => {
@@ -161,9 +173,11 @@ performImagePreview = (params) => {
     JSON.parse(params.negate) ? imageNegate() : null;
     JSON.parse(params.normalize) ? imageNormalize() : null;
     JSON.parse(params.grayscale) ? imageGrayscale() : null;
-    // imageStream.toFile(processedPreviewFile, (err, info) => {
-    //   resolve(processedPreviewFile)
-    // })
+    params.median !== '' ? imageMedian(params.median) : null;
+    JSON.parse(params.linear) ? imageLinear() : null;
+    JSON.parse(params.doRecomb) ? imageRecomb(params.recomb) : null;
+    JSON.parse(params.doConvolve) ? imageConvolve(params.convolve) : null;
+
     imageStream.jpeg({
       quality: 40
     }).toBuffer((err, data, info) => {
@@ -195,7 +209,7 @@ imageGamma = (intensity) => {
 
 imageSharpen = (intensity) => {
   imageStream
-    .sharpen(parseFloat(intensity),3,3)
+    .sharpen(parseFloat(intensity), 3, 3)
 }
 
 imageFlipY = () => {
@@ -241,6 +255,58 @@ imageRemoveAlpha = () => {
 imageAddAlpha = () => {
   imageStream
     .ensureAlpha()
+}
+
+imageMedian = (size) => {
+  imageStream
+    .median(parseInt(size))
+}
+
+imageConvolve = (matrix) => {
+  let nan = false;
+    matrix.map(x => {
+      if (isNaN(x)) {
+        nan = true;
+      }
+    })
+  //kernel array of size width*height
+  let kernel = []
+  matrix.map(x => {
+    kernel.push(parseFloat(x))
+  })
+  if(nan===false)
+  {
+    imageStream
+    .convolve({
+      width: 3,
+      height: 3,
+      kernel: kernel
+    })
+  }
+}
+
+imageLinear = () => {
+  imageStream
+    .linear()
+}
+
+imageRecomb = (matrix3x3) => {
+  let tmp = matrix3x3.split(',')
+  let tmp2 = []
+  let nan = false;
+  tmp.map(x => {
+    tmp2.push(parseFloat(x))
+    if(isNaN(x))
+    {
+      nan = true;
+    }
+  })
+  let recombMatrix = chunkArray(tmp2, 3);
+  if(nan===false)
+  {
+    imageStream
+    .recomb(recombMatrix)
+  }
 }
 
 if (process.env.NODE_ENV === 'production') {

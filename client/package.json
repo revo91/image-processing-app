@@ -11,7 +11,8 @@
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
     "react-dropzone": "^9.0.0",
-    "react-scripts": "2.1.5",
+    "react-scripts": "^2.1.8",
+    "react-test-renderer": "^16.8.5",
     "sharp": "^0.21.3",
     "typeface-roboto": "0.0.54"
   },
@@ -29,5 +30,8 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "react-testing-library": "^6.0.3"
+  }
 }

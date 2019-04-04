@@ -4,7 +4,7 @@ import AppBar from './components/AppBar';
 import 'typeface-roboto';
 import Stepper from './components/Stepper';
 import Grid from '@material-ui/core/Grid';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import Dropzone from './components/Dropzone';
 import MetadataTable from './components/MetadataTable';
 import Tabs from './components/Tabs';
@@ -13,7 +13,20 @@ import axios from 'axios';
 import { withSnackbar } from 'notistack';
 import Button from '@material-ui/core/Button';
 import ImageCard from './components/ImageCard';
+import deepPurple from '@material-ui/core/colors/deepPurple';
+import teal from '@material-ui/core/colors/teal';
 
+
+
+const theme = createMuiTheme({
+  palette: {
+    primary: teal,
+    secondary: deepPurple,
+    },
+    typography: {
+      useNextVariants: true,
+    },
+});
 
 const styles = theme => ({
   root: {
@@ -27,6 +40,7 @@ const styles = theme => ({
 //uploaded image data
 let imageName;
 let imageExtension;
+let delay;
 
 class App extends Component {
   state = {
@@ -38,6 +52,7 @@ class App extends Component {
     blur: '',
     gamma: '',
     sharpen: '',
+    median: '',
     flipY: false,
     flipX: false,
     negate: false,
@@ -46,6 +61,47 @@ class App extends Component {
     destinationFormat: '',
     removeAlpha: false,
     addAlpha: false,
+    convolve: false,
+    linear: false,
+    recomb: false,
+    //convolve matrix
+    convolve00:'',
+    convolve01:'',
+    convolve02:'',
+    convolve10:'',
+    convolve11:'',
+    convolve12:'',
+    convolve20:'',
+    convolve21:'',
+    convolve22:'',
+    convolve00Error:false,
+    convolve01Error:false,
+    convolve02Error:false,
+    convolve10Error:false,
+    convolve11Error:false,
+    convolve12Error:false,
+    convolve20Error:false,
+    convolve21Error:false,
+    convolve22Error:false,
+    //recomb matrix
+    recomb00:'',
+    recomb01:'',
+    recomb02:'',
+    recomb10:'',
+    recomb11:'',
+    recomb12:'',
+    recomb20:'',
+    recomb21:'',
+    recomb22:'',
+    recomb00Error:false,
+    recomb01Error:false,
+    recomb02Error:false,
+    recomb10Error:false,
+    recomb11Error:false,
+    recomb12Error:false,
+    recomb20Error:false,
+    recomb21Error:false,
+    recomb22Error:false,
     //image settings error
     resolutionError: false,
     rotateError: false,
@@ -70,29 +126,54 @@ class App extends Component {
 
   handleStepper = (step) => {
     this.setState({ activeStep: step })
-    let imageParams = [this.state.resolution,
-    this.state.rotate,
-    this.state.blur,
-    this.state.gamma,
-    this.state.sharpen,
-    this.state.flipY,
-    this.state.flipX,
-    this.state.negate,
-    this.state.normalize,
-    this.state.grayscale,
-    this.state.destinationFormat,
-    this.state.removeAlpha,
-    this.state.addAlpha]
 
     if (step === 2) {
-      this.requestImageProcessing(...imageParams)
+      this.requestImageProcessing(...this.returnFinalProcessingState())
     }
     if (step === 0) {
       this.setState({
         resolution: '', rotate: '', blur: '', gamma: '', sharpen: '', flipY: false, flipX: false, negate: false,
-        normalize: false, grayscale: false, destinationFormat: '', removeAlpha: false, addAlpha: false, imageProcessingPreview: '', previewToggle: 'processingPreview'
+        normalize: false, grayscale: false, destinationFormat: '', removeAlpha: false, addAlpha: false, imageProcessingPreview: '', 
+        previewToggle: 'processingPreview', median: '', convolve: false, linear: false, recomb: false
       })
     }
+  }
+
+  returnProcessingPreviewState = () => {
+    return [this.state.rotate, this.state.blur, this.state.gamma, this.state.sharpen, 
+      this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale, this.state.median,
+      this.returnConvolveMatrix(), this.state.linear, this.returnRecombMatrix()]
+  }
+
+  returnFinalProcessingState = () => {
+    return [this.state.resolution, this.state.rotate, this.state.blur, this.state.gamma, this.state.sharpen, 
+      this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale, this.state.median,
+      this.returnConvolveMatrix(), this.state.linear, this.returnRecombMatrix(), this.state.destinationFormat, this.state.removeAlpha, this.state.addAlpha]
+  }
+
+  returnConvolveMatrix = () => {
+    return [parseFloat(this.state.convolve00),
+      parseFloat(this.state.convolve01),
+      parseFloat(this.state.convolve02),
+      parseFloat(this.state.convolve10),
+      parseFloat(this.state.convolve11),
+      parseFloat(this.state.convolve12),
+      parseFloat(this.state.convolve20),
+      parseFloat(this.state.convolve21),
+      parseFloat(this.state.convolve22)]
+  }
+
+  returnRecombMatrix = () => {
+    return [
+      [parseFloat(this.state.recomb00), parseFloat(this.state.recomb01), parseFloat(this.state.recomb02)],
+      [parseFloat(this.state.recomb10), parseFloat(this.state.recomb11), parseFloat(this.state.recomb12)],
+      [parseFloat(this.state.recomb20), parseFloat(this.state.recomb21), parseFloat(this.state.recomb22)]
+    ]
+  }
+
+  delayPreview = () => {
+    clearTimeout(delay)
+    delay = setTimeout(() => this.requestImageProcessingPreview(...this.returnProcessingPreviewState()), 2000)
   }
 
   handleMetadata = (metadata) => {
@@ -100,37 +181,93 @@ class App extends Component {
   }
 
   handleSettings = (name, value) => {
-    //this.setState({ [name]: value },()=>this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale))
     switch (name) {
       case 'resolution':
         this.setState({ [name]: value, resolutionError: (value >= 1 && value <= 100) || value === '' ? false : true })
         break;
       case 'rotate':
-        this.setState({ [name]: value, rotateError: (value >= -360 && value <= 360) || value === '' ? false : true }, () => setTimeout(() => this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.sharpen, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale), 2000))
+        this.setState({ [name]: value, rotateError: (value >= -360 && value <= 360) || value === '' ? false : true }, 
+        () => this.delayPreview())
         break;
       case 'blur':
-        this.setState({ [name]: value, blurError: (value >= 1 && value <= 20) || value === '' ? false : true }, () => setTimeout(() => this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.sharpen, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale), 2000))
+        this.setState({ [name]: value, blurError: (value >= 1 && value <= 20) || value === '' ? false : true }, 
+        () => this.delayPreview())
         break;
       case 'gamma':
-        this.setState({ [name]: value, gammaError: (value >= 1 && value <= 3) || value === '' ? false : true }, () => setTimeout(() => this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.sharpen, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale), 2000))
+        this.setState({ [name]: value, gammaError: (value >= 1 && value <= 3) || value === '' ? false : true }, 
+        () => this.delayPreview())
         break;
       case 'sharpen':
-        this.setState({ [name]: value, sharpenError: (value >= 1 && value <= 50) || value === '' ? false : true }, () => setTimeout(() => this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.sharpen, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale), 2000))
+        this.setState({ [name]: value, sharpenError: (value >= 1 && value <= 50) || value === '' ? false : true }, 
+        () => this.delayPreview())
         break;
+      case 'median':
+        this.setState({ [name]: value, medianError: (value >= 1 && value <=5) || value === '' ? false : true },
+        () => this.delayPreview())
+      break;
+      case 'convolve00':
+      case 'convolve01':
+      case 'convolve02':
+      case 'convolve10':
+      case 'convolve11':
+      case 'convolve12':
+      case 'convolve20':
+      case 'convolve21':
+      case 'convolve22':
+        this.setState({ [name]: value, [`${name}Error`]: isNaN(value) ? true : false }, 
+        () => {
+          let notNull = true;
+          [...this.returnConvolveMatrix()].map(x=>{
+            if(isNaN(x))
+            {
+              notNull = false;
+            }
+          })
+          if(notNull===true)
+          {
+            this.delayPreview()
+          }
+        })
+        break;
+      case 'recomb00':
+      case 'recomb01':
+      case 'recomb02':
+      case 'recomb10':
+      case 'recomb11':
+      case 'recomb12':
+      case 'recomb20':
+      case 'recomb21':
+      case 'recomb22':
+      this.setState({ [name]: value, [`${name}Error`]: isNaN(value) ? true : false }, 
+      () => {
+        let notNull = true;
+        [...this.returnRecombMatrix()].map(x=>{
+          x.map(y=>{
+            if(isNaN(y))
+            {
+              notNull = false;
+            }
+          })  
+        })
+        if(notNull===true)
+        {
+          this.delayPreview()
+        }
+      })
+      break;
+      
       case 'flipY':
       case 'flipX':
       case 'negate':
       case 'normalize':
       case 'grayscale':
-        this.setState({ [name]: value }, () => this.requestImageProcessingPreview(this.state.rotate, this.state.blur, this.state.gamma, this.state.sharpen, this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale));
-        break;
-      case 'destinationFormat':
-      case 'removeAlpha':
-      case 'addAlpha':
-        this.setState({ [name]: value })
-        break;
+      case 'linear':
+      case 'recomb':
+      case 'convolve':
+      this.setState({ [name]: value }, () => this.requestImageProcessingPreview(...this.returnProcessingPreviewState()))
+      break;
       default:
-        return null;
+      this.setState({ [name]: value })
     }
   }
 
@@ -187,10 +324,12 @@ class App extends Component {
     })
   }
 
-  requestImageProcessingPreview = (rotate, blur, gamma, sharpen, flipY, flipX, negate, normalize, grayscale) => {
+  requestImageProcessingPreview = (rotate, blur, gamma, sharpen, flipY, flipX, negate, normalize, grayscale, median, convolve, linear, recomb) => {
     if ((this.state.resolutionError || this.state.rotateError || this.state.blurError || this.state.gammaError || this.state.sharpenError) !== true) {
       this.setState({ circularProgress: true, settingsDisabled: true })
       let params = new URLSearchParams();
+      params.append('doConvolve', this.state.convolve)
+      params.append('doRecomb', this.state.recomb)
       params.append('rotate', rotate);
       params.append('blur', blur);
       params.append('gamma', gamma);
@@ -200,6 +339,12 @@ class App extends Component {
       params.append('negate', negate);
       params.append('normalize', normalize);
       params.append('grayscale', grayscale);
+      params.append('median', median);
+      convolve.map(x=>{
+        params.append('convolve', x);
+      })
+      params.append('linear', linear);
+      params.append('recomb', recomb);
       axios({
         url: '/api/getImagePreviewLive',
         method: 'POST',
@@ -211,10 +356,13 @@ class App extends Component {
     }
   }
 
-  requestImageProcessing = (resolution, rotate, blur, gamma, sharpen, flipY, flipX, negate, normalize, grayscale, format, removeAlpha, addAlpha) => {
+  requestImageProcessing = (resolution, rotate, blur, gamma, sharpen, flipY, flipX, negate, normalize, grayscale, median, convolve, 
+    linear, recomb, format, removeAlpha, addAlpha) => {
     let renderingInProgressSnackbar = this.props.enqueueSnackbar('Trwa renderowanie pliku...', { variant: 'info', persist: 'true' })
     this.setState({ nextFileButtonDisabled: true })
     let params = new URLSearchParams();
+    params.append('doConvolve', this.state.convolve)
+    params.append('doRecomb', this.state.recomb)
     params.append('resolution', resolution);
     params.append('rotate', rotate);
     params.append('blur', blur);
@@ -225,6 +373,10 @@ class App extends Component {
     params.append('negate', negate);
     params.append('normalize', normalize);
     params.append('grayscale', grayscale);
+    params.append('median', median);
+    params.append('convolve', convolve);
+    params.append('linear', linear);
+    params.append('recomb', recomb);
     params.append('format', format);
     params.append('removeAlpha', removeAlpha);
     params.append('addAlpha', addAlpha);
@@ -250,6 +402,7 @@ class App extends Component {
     const { classes } = this.props
     return (
       <React.Fragment>
+         <MuiThemeProvider theme={theme}>
         <AppBar></AppBar>
         <div className={classes.root}>
           <Grid
@@ -291,12 +444,53 @@ class App extends Component {
                           destinationFormat={this.state.destinationFormat}
                           removeAlpha={this.state.removeAlpha}
                           addAlpha={this.state.addAlpha}
+                          median={this.state.median}
+                          convolve={this.state.convolve}
+                          linear={this.state.linear}
+                          recomb={this.state.recomb}
+                          recomb00={this.state.recomb00}
+                          recomb01={this.state.recomb01}
+                          recomb02={this.state.recomb02}
+                          recomb10={this.state.recomb10}
+                          recomb11={this.state.recomb11}
+                          recomb12={this.state.recomb12}
+                          recomb20={this.state.recomb20}
+                          recomb21={this.state.recomb21}
+                          recomb22={this.state.recomb22}
+                          convolve00={this.state.convolve00}
+                          convolve01={this.state.convolve01}
+                          convolve02={this.state.convolve02}
+                          convolve10={this.state.convolve10}
+                          convolve11={this.state.convolve11}
+                          convolve12={this.state.convolve12}
+                          convolve20={this.state.convolve20}
+                          convolve21={this.state.convolve21}
+                          convolve22={this.state.convolve22}
                           //errors from child
                           resolutionError={this.state.resolutionError}
                           rotateError={this.state.rotateError}
                           blurError={this.state.blurError}
                           gammaError={this.state.gammaError}
                           sharpenError={this.state.sharpenError}
+                          medianError={this.state.medianError}
+                          recomb00Error={this.state.recomb00Error}
+                          recomb01Error={this.state.recomb01Error}
+                          recomb02Error={this.state.recomb02Error}
+                          recomb10Error={this.state.recomb10Error}
+                          recomb11Error={this.state.recomb11Error}
+                          recomb12Error={this.state.recomb12Error}
+                          recomb20Error={this.state.recomb20Error}
+                          recomb21Error={this.state.recomb21Error}
+                          recomb22Error={this.state.recomb22Error}
+                          convolve00Error={this.state.convolve00Error}
+                          convolve01Error={this.state.convolve01Error}
+                          convolve02Error={this.state.convolve02Error}
+                          convolve10Error={this.state.convolve10Error}
+                          convolve11Error={this.state.convolve11Error}
+                          convolve12Error={this.state.convolve12Error}
+                          convolve20Error={this.state.convolve20Error}
+                          convolve21Error={this.state.convolve21Error}
+                          convolve22Error={this.state.convolve22Error}
                           //images preview
                           processedImagePreview={<ImageCard imgSrc={this.state.previewToggle === 'processingPreview' ? this.state.imageProcessingPreview : this.state.uploadedImage}
                             previewToggle={this.handlePreviewToggle}
@@ -317,6 +511,7 @@ class App extends Component {
             </Stepper>
           </Grid>
         </div>
+        </MuiThemeProvider>
       </React.Fragment>
     );
   }

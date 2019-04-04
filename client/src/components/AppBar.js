@@ -21,29 +21,31 @@ const styles = {
   },
 };
 
-function ButtonAppBar(props) {
-  const { classes } = props;
-  return (
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" color="inherit" className={classes.grow}>
-            Edycja plików graficznych online
-          </Typography>
-              <IconButton color="inherit">
-                <LanguageIcon />
-              </IconButton>
-        </Toolbar>
-      </AppBar>
-    </div>
-  );
+class AppMainBar extends React.Component {
+  render(){
+    const { classes } = this.props;
+    return(
+      <div className={classes.root}>
+        <AppBar position="static">
+          <Toolbar>
+            <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" color="inherit" className={classes.grow}>
+              Edycja plików graficznych online
+            </Typography>
+                <IconButton color="inherit">
+                  <LanguageIcon />
+                </IconButton>
+          </Toolbar>
+        </AppBar>
+      </div>
+    )
+  }
 }
 
-ButtonAppBar.propTypes = {
+AppMainBar.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(ButtonAppBar);
+export default withStyles(styles)(AppMainBar);

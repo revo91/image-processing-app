@@ -9,7 +9,8 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import MenuItem from '@material-ui/core/MenuItem';
-import Button from '@material-ui/core/Button'
+import Button from '@material-ui/core/Button';
+import '../App.css';
 
 const styles = theme => ({
   container: {
@@ -24,6 +25,22 @@ const styles = theme => ({
   },
   navButtons: {
     marginTop: theme.spacing.unit * 5
+  },
+  sticky: {
+    WebkitPosition: 'sticky', /* Safari */
+    position: 'sticky',
+    top: 10,
+  },
+  dividerGradient: {
+    backgroundImage: `linear-gradient(to right, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`
+  },
+  gradientRightPrimary: {
+    borderRight: `4px solid ${theme.palette.primary.main}`,
+    marginBottom: theme.spacing.unit * 4
+  },
+  gradientRightSecondary: {
+    borderRight: `4px solid ${theme.palette.secondary.main}`,
+    marginBottom: theme.spacing.unit * 4
   }
 });
 
@@ -59,11 +76,9 @@ class Settings extends React.Component {
 
   render() {
     const { classes } = this.props;
-
     return (
       <form className={classes.container} noValidate autoComplete="off">
-        <Grid container justify="space-between" spacing={8}>
-
+        <Grid container spacing={24} justify="space-between">
           <Grid container item xs={12} sm={12} md={6} spacing={24}>
             <Typography variant="h6" className={classes.settingsSubheading}>Zmiana wielkości obrazu</Typography>
             <Grid item xs={12}>
@@ -143,6 +158,300 @@ class Settings extends React.Component {
               />
             </Grid>
             <Grid item xs={12}>
+              <TextField
+                id="median"
+                label="Mediana"
+                className={classes.textField}
+                value={this.props.median}
+                onChange={this.handleChange('median')}
+                margin="normal"
+                helperText="Zakres 1 - 5"
+                error={this.props.medianError}
+                type="Number"
+                disabled={this.props.textFieldsDisabled}
+              />
+            </Grid>
+
+            <Grid container item xs={12} spacing={24} className={classes.gradientRightPrimary}>
+              <Grid item xs={12}>
+                <FormGroup row>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={this.props.convolve}
+                        onChange={this.handleChange('convolve', true)}
+                        value="convolve"
+                        color="primary"
+                        disabled={this.props.textFieldsDisabled}
+                      />
+                    }
+                    label="Convolve"
+                  />
+                </FormGroup>
+              </Grid>
+              {/* convolve 3x3 textfields */}
+
+              <Grid item xs={4}>
+                <TextField
+                  id="convolve-0-0"
+                  label="0-0"
+                  className={classes.textField}
+                  value={this.props.convolve00}
+                  onChange={this.handleChange('convolve00')}
+                  error={this.props.convolve00Error}
+                  margin="dense"
+                  type="Text"
+                  disabled={this.props.textFieldsDisabled || !this.props.convolve}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  id="convolve-0-1"
+                  label="0-1"
+                  className={classes.textField}
+                  value={this.props.convolve01}
+                  onChange={this.handleChange('convolve01')}
+                  error={this.props.convolve01Error}
+                  margin="dense"
+                  type="Text"
+                  disabled={this.props.textFieldsDisabled || !this.props.convolve}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  id="convolve-0-2"
+                  label="0-2"
+                  className={classes.textField}
+                  value={this.props.convolve02}
+                  onChange={this.handleChange('convolve02')}
+                  error={this.props.convolve02Error}
+                  margin="dense"
+                  type="Text"
+                  disabled={this.props.textFieldsDisabled || !this.props.convolve}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  id="convolve-1-0"
+                  label="1-0"
+                  className={classes.textField}
+                  value={this.props.convolve10}
+                  onChange={this.handleChange('convolve10')}
+                  error={this.props.convolve10Error}
+                  margin="dense"
+                  type="Text"
+                  disabled={this.props.textFieldsDisabled || !this.props.convolve}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  id="convolve-1-1"
+                  label="1-1"
+                  className={classes.textField}
+                  value={this.props.convolve11}
+                  onChange={this.handleChange('convolve11')}
+                  error={this.props.convolve11Error}
+                  margin="dense"
+                  type="Text"
+                  disabled={this.props.textFieldsDisabled || !this.props.convolve}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  id="convolve-1-2"
+                  label="1-2"
+                  className={classes.textField}
+                  value={this.props.convolve12}
+                  onChange={this.handleChange('convolve12')}
+                  error={this.props.convolve12Error}
+                  margin="dense"
+                  type="Text"
+                  disabled={this.props.textFieldsDisabled || !this.props.convolve}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  id="convolve-2-0"
+                  label="2-0"
+                  className={classes.textField}
+                  value={this.props.convolve20}
+                  onChange={this.handleChange('convolve20')}
+                  error={this.props.convolve20Error}
+                  margin="dense"
+                  type="Text"
+                  disabled={this.props.textFieldsDisabled || !this.props.convolve}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  id="convolve-2-1"
+                  label="2-1"
+                  className={classes.textField}
+                  value={this.props.convolve21}
+                  onChange={this.handleChange('convolve21')}
+                  error={this.props.convolve21Error}
+                  margin="dense"
+                  type="Text"
+                  disabled={this.props.textFieldsDisabled || !this.props.convolve}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  id="convolve-2-2"
+                  label="2-2"
+                  className={classes.textField}
+                  value={this.props.convolve22}
+                  onChange={this.handleChange('convolve22')}
+                  error={this.props.convolve22Error}
+                  margin="dense"
+                  type="Text"
+                  disabled={this.props.textFieldsDisabled || !this.props.convolve}
+                />
+              </Grid>
+              {/* convolve 3x3 textfields */}
+            </Grid>
+
+
+            {/* recomb 3x3 textfields */}
+            <Grid container item xs={12} spacing={24} className={classes.gradientRightSecondary}>
+              <Grid item xs={12}>
+                <FormGroup row>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={this.props.recomb}
+                        onChange={this.handleChange('recomb', true)}
+                        value="recomb"
+                        color="primary"
+                        disabled={this.props.textFieldsDisabled}
+                      />
+                    }
+                    label="Recomb"
+                  />
+                </FormGroup>
+              </Grid>
+
+              <Grid item xs={4}>
+                <TextField
+                  id="recomb-0-0"
+                  label="0-0"
+                  className={classes.textField}
+                  value={this.props.recomb00}
+                  onChange={this.handleChange('recomb00')}
+                  error={this.props.recomb00Error}
+                  margin="dense"
+                  type="text"
+                  disabled={this.props.textFieldsDisabled || !this.props.recomb}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  id="recomb-0-1"
+                  label="0-1"
+                  className={classes.textField}
+                  value={this.props.recomb01}
+                  onChange={this.handleChange('recomb01')}
+                  error={this.props.recomb01Error}
+                  margin="dense"
+                  type="text"
+                  disabled={this.props.textFieldsDisabled || !this.props.recomb}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  id="recomb-0-2"
+                  label="0-2"
+                  className={classes.textField}
+                  value={this.props.recomb02}
+                  onChange={this.handleChange('recomb02')}
+                  error={this.props.recomb02Error}
+                  margin="dense"
+                  type="text"
+                  disabled={this.props.textFieldsDisabled || !this.props.recomb}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  id="recomb-1-0"
+                  label="1-0"
+                  className={classes.textField}
+                  value={this.props.recomb10}
+                  onChange={this.handleChange('recomb10')}
+                  error={this.props.recomb10Error}
+                  margin="dense"
+                  type="text"
+                  disabled={this.props.textFieldsDisabled || !this.props.recomb}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  id="recomb-1-1"
+                  label="1-1"
+                  className={classes.textField}
+                  value={this.props.recomb11}
+                  onChange={this.handleChange('recomb11')}
+                  error={this.props.recomb11Error}
+                  margin="dense"
+                  type="text"
+                  disabled={this.props.textFieldsDisabled || !this.props.recomb}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  id="recomb-1-2"
+                  label="1-2"
+                  className={classes.textField}
+                  value={this.props.recomb12}
+                  onChange={this.handleChange('recomb12')}
+                  error={this.props.recomb12Error}
+                  margin="dense"
+                  type="text"
+                  disabled={this.props.textFieldsDisabled || !this.props.recomb}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  id="recomb-2-0"
+                  label="2-0"
+                  className={classes.textField}
+                  value={this.props.recomb20}
+                  onChange={this.handleChange('recomb20')}
+                  error={this.props.recomb20Error}
+                  margin="dense"
+                  type="text"
+                  disabled={this.props.textFieldsDisabled || !this.props.recomb}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  id="recomb-2-1"
+                  label="2-1"
+                  className={classes.textField}
+                  value={this.props.recomb21}
+                  onChange={this.handleChange('recomb21')}
+                  error={this.props.recomb21Error}
+                  margin="dense"
+                  type="text"
+                  disabled={this.props.textFieldsDisabled || !this.props.recomb}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  id="recomb-2-2"
+                  label="2-2"
+                  className={classes.textField}
+                  value={this.props.recomb22}
+                  onChange={this.handleChange('recomb22')}
+                  error={this.props.recomb22Error}
+                  margin="dense"
+                  type="text"
+                  disabled={this.props.textFieldsDisabled || !this.props.recomb}
+                />
+              </Grid>
+              {/* recomb 3x3 textfields */}
+            </Grid>
+
+            <Grid item xs={12}>
               <FormGroup row>
                 <FormControlLabel
                   control={
@@ -199,7 +508,23 @@ class Settings extends React.Component {
                   label="Normalizacja"
                 />
               </FormGroup>
-              
+
+              <FormGroup row>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={this.props.linear}
+                      onChange={this.handleChange('linear', true)}
+                      value="linear"
+                      color="primary"
+                      disabled={this.props.textFieldsDisabled}
+                    />
+                  }
+                  label="Linear"
+                />
+              </FormGroup>
+
+
             </Grid>
             <Typography variant="h6" className={classes.settingsSubheading}>Manipulacja kolorów</Typography>
             <Grid item xs={12}>
@@ -273,8 +598,11 @@ class Settings extends React.Component {
           </Grid>
           <Grid container item xs={12} sm={12} md={6} spacing={24}>
             <Grid item xs={12}>
-              <Typography variant="h6" className={classes.settingsSubheading}>Podgląd</Typography>
-              {this.props.processedImagePreview}</Grid>
+              <div className={classes.sticky}>
+                <Typography variant="h6" className={classes.settingsSubheading}>Podgląd</Typography>
+                {this.props.processedImagePreview}
+              </div>
+            </Grid>
           </Grid>
         </Grid>
 

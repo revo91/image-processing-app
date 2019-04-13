@@ -374,7 +374,9 @@ class App extends Component {
     params.append('normalize', normalize);
     params.append('grayscale', grayscale);
     params.append('median', median);
-    params.append('convolve', convolve);
+    convolve.map(x=>{
+      params.append('convolve', x);
+    })
     params.append('linear', linear);
     params.append('recomb', recomb);
     params.append('format', format);

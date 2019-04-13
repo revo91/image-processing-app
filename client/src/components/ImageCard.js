@@ -11,7 +11,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 const styles = theme => ({
   card: {
-    maxHeight: 600
+    
   },
   media: {
     objectFit: 'cover',

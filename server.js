@@ -97,7 +97,7 @@ app.post('/api/getUploadedImage', (req, res) => {
   if (imageToProcessMetadata.width > 1000 || imageToProcessMetadata.height > 1000) {
     imageToProcessMetadata.width >= imageToProcessMetadata.height ? previewBuffer.resize({ width: 1000 }) : previewBuffer.resize({ height: 1000 })
     previewBuffer.jpeg({
-      quality: 40
+      quality: 80
     }).toBuffer((err, data, info) => {
       previewBuffer = data
       res.send({ binary: data })
@@ -179,7 +179,7 @@ performImagePreview = (params) => {
     JSON.parse(params.doConvolve) ? imageConvolve(params.convolve) : null;
 
     imageStream.jpeg({
-      quality: 40
+      quality: 50
     }).toBuffer((err, data, info) => {
       resolve(data)
     })

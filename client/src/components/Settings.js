@@ -165,13 +165,26 @@ class Settings extends React.Component {
                 value={this.props.median}
                 onChange={this.handleChange('median')}
                 margin="normal"
-                helperText="Zakres 1 - 5"
+                helperText="Zakres 3 - 20"
                 error={this.props.medianError}
                 type="Number"
                 disabled={this.props.textFieldsDisabled}
               />
             </Grid>
-
+            <Grid item xs={12}>
+              <TextField
+                id="threshold"
+                label="Progowanie"
+                className={classes.textField}
+                value={this.props.threshold}
+                onChange={this.handleChange('threshold')}
+                margin="normal"
+                helperText="Zakres 1 - 255"
+                error={this.props.thresholdError}
+                type="Number"
+                disabled={this.props.textFieldsDisabled}
+              />
+              </Grid>
             <Grid container item xs={12} spacing={24} className={classes.gradientRightPrimary}>
               <Grid item xs={12}>
                 <FormGroup row>
@@ -185,7 +198,7 @@ class Settings extends React.Component {
                         disabled={this.props.textFieldsDisabled}
                       />
                     }
-                    label="Convolve"
+                    label="Macierz konwolucji"
                   />
                 </FormGroup>
               </Grid>
@@ -326,7 +339,7 @@ class Settings extends React.Component {
                         disabled={this.props.textFieldsDisabled}
                       />
                     }
-                    label="Recomb"
+                    label="Macierz rekombinacji"
                   />
                 </FormGroup>
               </Grid>

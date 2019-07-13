@@ -7,6 +7,7 @@ const sharp = require('sharp');
 const formidable = require('formidable');
 const tempDir = path.join(__dirname, '/temp')
 const fs = require('fs');
+const gm = require('gm');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -79,39 +80,34 @@ app.post('/api/upload', (req, res) => {
   });
 })
 
-app.post('/api/imageProcessing', (req, res) => {
-  let params = req.body;
-  performImageProcessing(params).then((out) => {
-    res.send({ binary: out })
-    res.on('finish', () => {
-      fs.unlink(imageToProcessFile, (err) => {
-        if (err) throw err;
-      });
-    })
-  })
-})
-
 app.post('/api/getUploadedImage', (req, res) => {
   //previewBuffer holds resized buffer for live preview
   previewBuffer = sharp(imageToProcessFile)
-  if (imageToProcessMetadata.width > 1000 || imageToProcessMetadata.height > 1000) {
-    imageToProcessMetadata.width >= imageToProcessMetadata.height ? previewBuffer.resize({ width: 1000 }) : previewBuffer.resize({ height: 1000 })
-    previewBuffer.jpeg({
-      quality: 80
-    }).toBuffer((err, data, info) => {
-      previewBuffer = data
-      res.send({ binary: data })
-    })
-  }
-  else {
-    previewBuffer.jpeg({
-      quality: 10
-    })
-      .toBuffer((err, data, info) => {
-        previewBuffer = data
-        res.send({ binary: data })
+  // if (imageToProcessMetadata.width > 1000 || imageToProcessMetadata.height > 1000) {
+  //   imageToProcessMetadata.width >= imageToProcessMetadata.height ? previewBuffer.resize({ width: 1000 }) : previewBuffer.resize({ height: 1000 })
+  //   previewBuffer.jpeg({
+  //     quality: 80
+  //   }).toBuffer((err, data, info) => {
+  //     previewBuffer = data
+  //     res.send({ binary: data })
+  //   })
+  // }
+  // else {
+  //   previewBuffer.jpeg({
+  //     quality: 10
+  //   })
+  //     .toBuffer((err, data, info) => {
+  //       previewBuffer = data
+  //       res.send({ binary: data })
+  //     })
+  // }
+  previewBuffer.jpeg({
+        quality: 40
       })
-  }
+        .toBuffer((err, data, info) => {
+          previewBuffer = data
+          res.send({ binary: data })
+        })
 })
 
 app.post('/api/getImagePreviewLive', (req, res) => {
@@ -121,8 +117,22 @@ app.post('/api/getImagePreviewLive', (req, res) => {
   })
 })
 
+app.post('/api/imageProcessing', (req, res) => {
+  let params = req.body;
+  performImageProcessing(params).then((out) => {
+    console.log(out)
+    res.send({ binary: out })
+    res.on('finish', () => {
+      fs.unlink(imageToProcessFile, (err) => {
+        if (err) throw err;
+      });
+    })
+  })
+})
+
 //image processing methods
 performImageProcessing = (params) => {
+
   imageStream = sharp(imageToProcessFile)
   return new Promise(function (resolve, reject) {
     params.resolution !== '' ? imageResize(params.resolution) : null;
@@ -135,30 +145,19 @@ performImageProcessing = (params) => {
     JSON.parse(params.flipY) ? imageFlipY() : null;
     JSON.parse(params.flipX) ? imageFlipX() : null;
     JSON.parse(params.negate) ? imageNegate() : null;
-    JSON.parse(params.normalize) ? imageNormalize() : null;
     JSON.parse(params.grayscale) ? imageGrayscale() : null;
     JSON.parse(params.linear) ? imageLinear() : null;
     JSON.parse(params.removeAlpha) ? imageRemoveAlpha() : null;
     JSON.parse(params.addAlpha) ? imageAddAlpha() : null;
     JSON.parse(params.doRecomb) ? imageRecomb(params.recomb) : null;
     JSON.parse(params.doConvolve) ? imageConvolve(params.convolve) : null;
-  
+    JSON.parse(params.threshold) ? imageThreshold(params.threshold) : null;
+    JSON.parse(params.normalize) ? imageNormalize() : null;
+
     imageStream.toBuffer((err, data, info) => {
       resolve(data)
     })
   })
-}
-
-chunkArray = (myArray, chunk_size) => {
-  var index = 0;
-  var arrayLength = myArray.length;
-  var tempArray = [];
-
-  for (index = 0; index < arrayLength; index += chunk_size) {
-    myChunk = myArray.slice(index, index + chunk_size);
-    tempArray.push(myChunk);
-  }
-  return tempArray;
 }
 
 performImagePreview = (params) => {
@@ -177,13 +176,34 @@ performImagePreview = (params) => {
     JSON.parse(params.linear) ? imageLinear() : null;
     JSON.parse(params.doRecomb) ? imageRecomb(params.recomb) : null;
     JSON.parse(params.doConvolve) ? imageConvolve(params.convolve) : null;
-
+    JSON.parse(params.threshold) ? imageThreshold(params.threshold) : null;
+    JSON.parse(params.normalize) ? imageNormalize() : null;
+    
     imageStream.jpeg({
-      quality: 50
+      quality: 40
     }).toBuffer((err, data, info) => {
       resolve(data)
     })
   })
+}
+
+chunkArray = (myArray, chunk_size) => {
+  var index = 0;
+  var arrayLength = myArray.length;
+  var tempArray = [];
+
+  for (index = 0; index < arrayLength; index += chunk_size) {
+    myChunk = myArray.slice(index, index + chunk_size);
+    tempArray.push(myChunk);
+  }
+  return tempArray;
+}
+
+imageThreshold = (threshold) => {
+  imageStream
+    .threshold(parseInt(threshold), {
+      greyscale: false
+    })
 }
 
 imageResize = (widthPercent) => {
@@ -209,7 +229,7 @@ imageGamma = (intensity) => {
 
 imageSharpen = (intensity) => {
   imageStream
-    .sharpen(parseFloat(intensity), 3, 3)
+    .sharpen(parseFloat(intensity), 1, 2)
 }
 
 imageFlipY = () => {
@@ -280,6 +300,7 @@ imageConvolve = (matrix) => {
     .convolve({
       width: 3,
       height: 3,
+      offset: 0,
       kernel: kernel
     })
   }
@@ -299,15 +320,33 @@ imageRecomb = (matrix3x3) => {
     if(isNaN(x))
     {
       nan = true;
+      console.log("true")
     }
   })
   let recombMatrix = chunkArray(tmp2, 3);
   if(nan===false)
   {
+    console.log("false")
+    console.log(recombMatrix)
     imageStream
     .recomb(recombMatrix)
   }
 }
+
+// gm('test.jpg')
+// .motionBlur(10,5,27)
+// .segment(0.015,5)
+// .noProfile()
+// .write('test1.jpg', function (err) {
+//   if (!err) console.log('done');
+//   else console.log(err)
+// });
+
+// sharp('3.jpg').sharpen(3,3,3).median(5).toFile('sharp_out.jpg', function(err) {
+//   if (err) throw err;
+//   console.log("done")
+// })
+
 
 if (process.env.NODE_ENV === 'production') {
   // Serve any static files

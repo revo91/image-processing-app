@@ -32,14 +32,15 @@ const theme = createMuiTheme({
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    margin: theme.spacing.unit * 3
+    margin: theme.spacing(3)
   },
   dropzone: {
     textAlign: 'center'
   },
   footer: {
-    paddingTop: theme.spacing.unit * 2,
-    paddingBottom: theme.spacing.unit * 2,
+    marginTop: theme.spacing(8),
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
     backgroundColor: grey[300]
   }
 });
@@ -427,7 +428,7 @@ class App extends Component {
             direction='row'
             justify='center'
             alignItems='center'
-            spacing={24}>
+            spacing={4}>
             <Stepper
               activeStep={this.state.activeStep}
               uploadForm={<Grid item xs={12} >
@@ -520,7 +521,7 @@ class App extends Component {
                   }}></Tabs>
                 </Grid></React.Fragment>}
               completedStep={
-                <Grid container spacing={24} className={classes.navButtons} justify='center'>
+                <Grid container spacing={4} className={classes.navButtons} justify='center'>
                   <Grid item xs={12} sm={6} md={4} lg={3}>
                     <Button variant='contained' color='primary' fullWidth onClick={() => this.handleStepper(0)} disabled={this.state.nextFileButtonDisabled}>Kolejny plik</Button>
                   </Grid>

@@ -151,7 +151,7 @@ performImageProcessing = (params) => {
     JSON.parse(params.addAlpha) ? imageAddAlpha() : null;
     JSON.parse(params.doRecomb) ? imageRecomb(params.recomb) : null;
     JSON.parse(params.doConvolve) ? imageConvolve(params.convolve) : null;
-    JSON.parse(params.threshold) ? imageThreshold(params.threshold) : null;
+    params.threshold !== '' ? imageThreshold(params.threshold) : null;
     JSON.parse(params.normalize) ? imageNormalize() : null;
 
     imageStream.toBuffer((err, data, info) => {
@@ -176,7 +176,7 @@ performImagePreview = (params) => {
     JSON.parse(params.linear) ? imageLinear() : null;
     JSON.parse(params.doRecomb) ? imageRecomb(params.recomb) : null;
     JSON.parse(params.doConvolve) ? imageConvolve(params.convolve) : null;
-    JSON.parse(params.threshold) ? imageThreshold(params.threshold) : null;
+    params.threshold !== '' ? imageThreshold(params.threshold) : null;
     JSON.parse(params.normalize) ? imageNormalize() : null;
     
     imageStream.jpeg({

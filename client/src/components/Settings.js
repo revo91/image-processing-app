@@ -620,7 +620,7 @@ class Settings extends React.Component {
         </Grid>
 
 
-        <Grid container spacing={4} className={classes.navButtons} justify="center">
+        <Grid container spacing={6} className={classes.navButtons} justify="center">
           <Grid item xs={12} sm={6} md={4} lg={3}>
             <Button fullWidth variant="contained" color="secondary" onClick={() => this.props.navigation(0)}>
               Reset

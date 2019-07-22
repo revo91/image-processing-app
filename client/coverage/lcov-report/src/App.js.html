@@ -1,0 +1,1625 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for src/App.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="..\prettify.css" />
+    <link rel="stylesheet" href="..\base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(..\sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="..\index.html">All files</a> / <a href="index.html">src</a> App.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">3.7% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>5/135</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">1.02% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>1/98</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">6.06% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>2/33</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">3.03% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>4/132</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+486
+487
+488
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+500
+501
+502
+503
+504
+505
+506
+507
+508
+509
+510
+511
+512
+513
+514
+515
+516
+517
+518
+519
+520
+521</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, { Component } from 'react';
+import './App.css';
+import AppBar from './components/AppBar';
+import 'typeface-roboto';
+import Stepper from './components/Stepper';
+import Grid from '@material-ui/core/Grid';
+import { withStyles, createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import Dropzone from './components/Dropzone';
+import MetadataTable from './components/MetadataTable';
+import Tabs from './components/Tabs';
+import SettingsTextFields from './components/Settings';
+import axios from 'axios';
+import { withSnackbar } from 'notistack';
+import Button from '@material-ui/core/Button';
+import ImageCard from './components/ImageCard';
+import deepPurple from '@material-ui/core/colors/deepPurple';
+import teal from '@material-ui/core/colors/teal';
+&nbsp;
+&nbsp;
+&nbsp;
+const theme = createMuiTheme({
+  palette: {
+    primary: teal,
+    secondary: deepPurple,
+    },
+    typography: {
+      useNextVariants: true,
+    },
+});
+&nbsp;
+const styles = theme =&gt; ({
+  root: {
+    flexGrow: 1,
+    margin: theme.spacing.unit * 3
+  },
+  dropzone: {
+    textAlign: 'center'
+  }
+});
+//uploaded image data
+let imageName;
+let imageExtension;
+let delay;
+&nbsp;
+class App extends Component {
+  state = {
+    activeStep: 0,
+    metadata: '',
+    //image settings
+    resolution: '',
+    rotate: '',
+    blur: '',
+    gamma: '',
+    sharpen: '',
+    median: '',
+    flipY: false,
+    flipX: false,
+    negate: false,
+    normalize: false,
+    grayscale: false,
+    destinationFormat: '',
+    removeAlpha: false,
+    addAlpha: false,
+    convolve: false,
+    linear: false,
+    recomb: false,
+    //convolve matrix
+    convolve00:'',
+    convolve01:'',
+    convolve02:'',
+    convolve10:'',
+    convolve11:'',
+    convolve12:'',
+    convolve20:'',
+    convolve21:'',
+    convolve22:'',
+    convolve00Error:false,
+    convolve01Error:false,
+    convolve02Error:false,
+    convolve10Error:false,
+    convolve11Error:false,
+    convolve12Error:false,
+    convolve20Error:false,
+    convolve21Error:false,
+    convolve22Error:false,
+    //recomb matrix
+    recomb00:'',
+    recomb01:'',
+    recomb02:'',
+    recomb10:'',
+    recomb11:'',
+    recomb12:'',
+    recomb20:'',
+    recomb21:'',
+    recomb22:'',
+    recomb00Error:false,
+    recomb01Error:false,
+    recomb02Error:false,
+    recomb10Error:false,
+    recomb11Error:false,
+    recomb12Error:false,
+    recomb20Error:false,
+    recomb21Error:false,
+    recomb22Error:false,
+    //image settings error
+    resolutionError: false,
+    rotateError: false,
+    blurError: false,
+    gammaError: false,
+    sharpenError: false,
+    //uploaded image to display
+    uploadedImage: '',
+    //image preview live,
+    imageProcessingPreview: '',
+    //previewToggle
+    previewToggle: 'processingPreview',
+    //nextFileButton enabled/disabled,
+    nextFileButtonDisabled: false,
+    circularProgress: false,
+    settingsDisabled: false
+  }
+&nbsp;
+  handlePreviewToggle = <span class="fstat-no" title="function not covered" >(s</span>tate) =&gt; {
+<span class="cstat-no" title="statement not covered" >    this.setState({ previewToggle: state })</span>
+  }
+&nbsp;
+  handleStepper = <span class="fstat-no" title="function not covered" >(s</span>tep) =&gt; {
+<span class="cstat-no" title="statement not covered" >    this.setState({ activeStep: step })</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (step === 2) {</span>
+<span class="cstat-no" title="statement not covered" >      this.requestImageProcessing(...this.returnFinalProcessingState())</span>
+    }
+<span class="cstat-no" title="statement not covered" >    if (step === 0) {</span>
+<span class="cstat-no" title="statement not covered" >      this.setState({</span>
+        resolution: '', rotate: '', blur: '', gamma: '', sharpen: '', flipY: false, flipX: false, negate: false,
+        normalize: false, grayscale: false, destinationFormat: '', removeAlpha: false, addAlpha: false, imageProcessingPreview: '', 
+        previewToggle: 'processingPreview', median: '', convolve: false, linear: false, recomb: false
+      })
+    }
+  }
+&nbsp;
+  returnProcessingPreviewState = <span class="fstat-no" title="function not covered" >()</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >    return [this.state.rotate, this.state.blur, this.state.gamma, this.state.sharpen, </span>
+      this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale, this.state.median,
+      this.returnConvolveMatrix(), this.state.linear, this.returnRecombMatrix()]
+  }
+&nbsp;
+  returnFinalProcessingState = <span class="fstat-no" title="function not covered" >()</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >    return [this.state.resolution, this.state.rotate, this.state.blur, this.state.gamma, this.state.sharpen, </span>
+      this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale, this.state.median,
+      this.returnConvolveMatrix(), this.state.linear, this.returnRecombMatrix(), this.state.destinationFormat, this.state.removeAlpha, this.state.addAlpha]
+  }
+&nbsp;
+  returnConvolveMatrix = <span class="fstat-no" title="function not covered" >()</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >    return [parseFloat(this.state.convolve00),</span>
+      parseFloat(this.state.convolve01),
+      parseFloat(this.state.convolve02),
+      parseFloat(this.state.convolve10),
+      parseFloat(this.state.convolve11),
+      parseFloat(this.state.convolve12),
+      parseFloat(this.state.convolve20),
+      parseFloat(this.state.convolve21),
+      parseFloat(this.state.convolve22)]
+  }
+&nbsp;
+  returnRecombMatrix = <span class="fstat-no" title="function not covered" >()</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >    return [</span>
+      [parseFloat(this.state.recomb00), parseFloat(this.state.recomb01), parseFloat(this.state.recomb02)],
+      [parseFloat(this.state.recomb10), parseFloat(this.state.recomb11), parseFloat(this.state.recomb12)],
+      [parseFloat(this.state.recomb20), parseFloat(this.state.recomb21), parseFloat(this.state.recomb22)]
+    ]
+  }
+&nbsp;
+  delayPreview = <span class="fstat-no" title="function not covered" >()</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >    clearTimeout(delay)</span>
+<span class="cstat-no" title="statement not covered" >    delay = setTimeout(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >this.requestImageProcessingPreview(...this.returnProcessingPreviewState()),</span> 2000)</span>
+  }
+&nbsp;
+  handleMetadata = <span class="fstat-no" title="function not covered" >(m</span>etadata) =&gt; {
+<span class="cstat-no" title="statement not covered" >    this.setState({ metadata: metadata })</span>
+  }
+&nbsp;
+  handleSettings = <span class="fstat-no" title="function not covered" >(n</span>ame, value) =&gt; {
+<span class="cstat-no" title="statement not covered" >    switch (name) {</span>
+      case 'resolution':
+<span class="cstat-no" title="statement not covered" >        this.setState({ [name]: value, resolutionError: (value &gt;= 1 &amp;&amp; value &lt;= 100) || value === '' ? false : true })</span>
+<span class="cstat-no" title="statement not covered" >        break;</span>
+      case 'rotate':
+<span class="cstat-no" title="statement not covered" >        this.setState({ [name]: value, rotateError: (value &gt;= -360 &amp;&amp; value &lt;= 360) || value === '' ? false : true }, </span>
+<span class="fstat-no" title="function not covered" >        ()</span> =&gt; <span class="cstat-no" title="statement not covered" >this.delayPreview())</span>
+<span class="cstat-no" title="statement not covered" >        break;</span>
+      case 'blur':
+<span class="cstat-no" title="statement not covered" >        this.setState({ [name]: value, blurError: (value &gt;= 1 &amp;&amp; value &lt;= 20) || value === '' ? false : true }, </span>
+<span class="fstat-no" title="function not covered" >        ()</span> =&gt; <span class="cstat-no" title="statement not covered" >this.delayPreview())</span>
+<span class="cstat-no" title="statement not covered" >        break;</span>
+      case 'gamma':
+<span class="cstat-no" title="statement not covered" >        this.setState({ [name]: value, gammaError: (value &gt;= 1 &amp;&amp; value &lt;= 3) || value === '' ? false : true }, </span>
+<span class="fstat-no" title="function not covered" >        ()</span> =&gt; <span class="cstat-no" title="statement not covered" >this.delayPreview())</span>
+<span class="cstat-no" title="statement not covered" >        break;</span>
+      case 'sharpen':
+<span class="cstat-no" title="statement not covered" >        this.setState({ [name]: value, sharpenError: (value &gt;= 1 &amp;&amp; value &lt;= 50) || value === '' ? false : true }, </span>
+<span class="fstat-no" title="function not covered" >        ()</span> =&gt; <span class="cstat-no" title="statement not covered" >this.delayPreview())</span>
+<span class="cstat-no" title="statement not covered" >        break;</span>
+      case 'median':
+<span class="cstat-no" title="statement not covered" >        this.setState({ [name]: value, medianError: (value &gt;= 1 &amp;&amp; value &lt;=5) || value === '' ? false : true },</span>
+<span class="fstat-no" title="function not covered" >        ()</span> =&gt; <span class="cstat-no" title="statement not covered" >this.delayPreview())</span>
+<span class="cstat-no" title="statement not covered" >      break;</span>
+      case 'convolve00':
+      case 'convolve01':
+      case 'convolve02':
+      case 'convolve10':
+      case 'convolve11':
+      case 'convolve12':
+      case 'convolve20':
+      case 'convolve21':
+      case 'convolve22':
+<span class="cstat-no" title="statement not covered" >        this.setState({ [name]: value, [`${name}Error`]: isNaN(value) ? true : false }, </span>
+<span class="fstat-no" title="function not covered" >        ()</span> =&gt; {
+          let notNull = <span class="cstat-no" title="statement not covered" >true;</span>
+<span class="cstat-no" title="statement not covered" >          [...this.returnConvolveMatrix()].map(<span class="fstat-no" title="function not covered" >x=</span>&gt;{</span>
+<span class="cstat-no" title="statement not covered" >            if(isNaN(x))</span>
+            {
+<span class="cstat-no" title="statement not covered" >              notNull = false;</span>
+            }
+          })
+<span class="cstat-no" title="statement not covered" >          if(notNull===true)</span>
+          {
+<span class="cstat-no" title="statement not covered" >            this.delayPreview()</span>
+          }
+        })
+<span class="cstat-no" title="statement not covered" >        break;</span>
+      case 'recomb00':
+      case 'recomb01':
+      case 'recomb02':
+      case 'recomb10':
+      case 'recomb11':
+      case 'recomb12':
+      case 'recomb20':
+      case 'recomb21':
+      case 'recomb22':
+<span class="cstat-no" title="statement not covered" >      this.setState({ [name]: value, [`${name}Error`]: isNaN(value) ? true : false }, </span>
+<span class="fstat-no" title="function not covered" >      ()</span> =&gt; {
+        let notNull = <span class="cstat-no" title="statement not covered" >true;</span>
+<span class="cstat-no" title="statement not covered" >        [...this.returnRecombMatrix()].map(<span class="fstat-no" title="function not covered" >x=</span>&gt;{</span>
+<span class="cstat-no" title="statement not covered" >          x.map(<span class="fstat-no" title="function not covered" >y=</span>&gt;{</span>
+<span class="cstat-no" title="statement not covered" >            if(isNaN(y))</span>
+            {
+<span class="cstat-no" title="statement not covered" >              notNull = false;</span>
+            }
+          })  
+        })
+<span class="cstat-no" title="statement not covered" >        if(notNull===true)</span>
+        {
+<span class="cstat-no" title="statement not covered" >          this.delayPreview()</span>
+        }
+      })
+<span class="cstat-no" title="statement not covered" >      break;</span>
+      
+      case 'flipY':
+      case 'flipX':
+      case 'negate':
+      case 'normalize':
+      case 'grayscale':
+      case 'linear':
+      case 'recomb':
+      case 'convolve':
+<span class="cstat-no" title="statement not covered" >      this.setState({ [name]: value }, <span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >this.requestImageProcessingPreview(...this.returnProcessingPreviewState()))</span></span>
+<span class="cstat-no" title="statement not covered" >      break;</span>
+      default:
+<span class="cstat-no" title="statement not covered" >      this.setState({ [name]: value })</span>
+    }
+  }
+&nbsp;
+  handleUpload = <span class="fstat-no" title="function not covered" >(f</span>ile) =&gt; {
+    let split = <span class="cstat-no" title="statement not covered" >file.name.split('.')</span>
+<span class="cstat-no" title="statement not covered" >    imageExtension = split[split.length - 1]</span>
+<span class="cstat-no" title="statement not covered" >    imageName = file.name.substring(0, file.name.length - imageExtension.length - 1)</span>
+    let uploadingInProgressSnackbar = <span class="cstat-no" title="statement not covered" >this.props.enqueueSnackbar('Wysyłanie pliku...', { variant: 'info', persist: 'true' })</span>
+    let imageFile = <span class="cstat-no" title="statement not covered" >new FormData();</span>
+<span class="cstat-no" title="statement not covered" >    imageFile.append('file', file);</span>
+<span class="cstat-no" title="statement not covered" >    axios({</span>
+      url: '/api/upload',
+      method: 'POST',
+      data: imageFile,
+      headers:
+      {
+        'Content-Type': 'multipart/form-data'
+      }
+    }).then(<span class="fstat-no" title="function not covered" >(r</span>es) =&gt; {
+<span class="cstat-no" title="statement not covered" >      if (res.status === 200) {</span>
+<span class="cstat-no" title="statement not covered" >        this.handleStepper(1)</span>
+        let meta = <span class="cstat-no" title="statement not covered" >res.data.metadata</span>
+        let preparedMeta = <span class="cstat-no" title="statement not covered" >{</span>
+          'Format': meta.format,
+          'Szerokość': meta.width,
+          'Wysokość': meta.height,
+          'Przestrzen': meta.space,
+          'Kanały': meta.channels,
+          'DPI': meta.density,
+          'Progresywny': meta.isProgressive === true ? 'Tak' : 'Nie',
+          'Przezroczystość': meta.hasAlpha === true ? 'Tak' : 'Nie'
+        }
+<span class="cstat-no" title="statement not covered" >        this.setState({ metadata: preparedMeta })</span>
+<span class="cstat-no" title="statement not covered" >        this.props.closeSnackbar(uploadingInProgressSnackbar)</span>
+<span class="cstat-no" title="statement not covered" >        this.requestUploadedImageToDisplay()</span>
+      }
+    })
+  }
+&nbsp;
+  requestUploadedImageToDisplay = <span class="fstat-no" title="function not covered" >()</span> =&gt; {
+<span class="cstat-no" title="statement not covered" >    this.setState({ circularProgress: true, settingsDisabled: true })</span>
+<span class="cstat-no" title="statement not covered" >    axios({</span>
+      url: '/api/getUploadedImage',
+      method: 'POST',
+    }).then(<span class="fstat-no" title="function not covered" >re</span>s =&gt; {
+      let imageBinaries = <span class="cstat-no" title="statement not covered" >res.data.binary.data</span>
+      let imgSrc = <span class="cstat-no" title="statement not covered" >`data:image/jpeg;base64,${Buffer.from(imageBinaries).toString('base64')}`</span>
+<span class="cstat-no" title="statement not covered" >      if (this.state.imageProcessingPreview === '') {</span>
+<span class="cstat-no" title="statement not covered" >        this.setState({ uploadedImage: imgSrc, imageProcessingPreview: imgSrc, circularProgress: false, settingsDisabled: false })</span>
+      }
+      else {
+<span class="cstat-no" title="statement not covered" >        this.setState({ uploadedImage: imgSrc, circularProgress: false, settingsDisabled: false })</span>
+      }
+    })
+  }
+&nbsp;
+  requestImageProcessingPreview = <span class="fstat-no" title="function not covered" >(r</span>otate, blur, gamma, sharpen, flipY, flipX, negate, normalize, grayscale, median, convolve, linear, recomb) =&gt; {
+<span class="cstat-no" title="statement not covered" >    if ((this.state.resolutionError || this.state.rotateError || this.state.blurError || this.state.gammaError || this.state.sharpenError) !== true) {</span>
+<span class="cstat-no" title="statement not covered" >      this.setState({ circularProgress: true, settingsDisabled: true })</span>
+      let params = <span class="cstat-no" title="statement not covered" >new URLSearchParams();</span>
+<span class="cstat-no" title="statement not covered" >      params.append('doConvolve', this.state.convolve)</span>
+<span class="cstat-no" title="statement not covered" >      params.append('doRecomb', this.state.recomb)</span>
+<span class="cstat-no" title="statement not covered" >      params.append('rotate', rotate);</span>
+<span class="cstat-no" title="statement not covered" >      params.append('blur', blur);</span>
+<span class="cstat-no" title="statement not covered" >      params.append('gamma', gamma);</span>
+<span class="cstat-no" title="statement not covered" >      params.append('sharpen', sharpen);</span>
+<span class="cstat-no" title="statement not covered" >      params.append('flipY', flipY);</span>
+<span class="cstat-no" title="statement not covered" >      params.append('flipX', flipX);</span>
+<span class="cstat-no" title="statement not covered" >      params.append('negate', negate);</span>
+<span class="cstat-no" title="statement not covered" >      params.append('normalize', normalize);</span>
+<span class="cstat-no" title="statement not covered" >      params.append('grayscale', grayscale);</span>
+<span class="cstat-no" title="statement not covered" >      params.append('median', median);</span>
+<span class="cstat-no" title="statement not covered" >      convolve.map(<span class="fstat-no" title="function not covered" >x=</span>&gt;{</span>
+<span class="cstat-no" title="statement not covered" >        params.append('convolve', x);</span>
+      })
+<span class="cstat-no" title="statement not covered" >      params.append('linear', linear);</span>
+<span class="cstat-no" title="statement not covered" >      params.append('recomb', recomb);</span>
+<span class="cstat-no" title="statement not covered" >      axios({</span>
+        url: '/api/getImagePreviewLive',
+        method: 'POST',
+        data: params,
+      }).then(<span class="fstat-no" title="function not covered" >re</span>s =&gt; {
+        let imageBinaries = <span class="cstat-no" title="statement not covered" >res.data.binary.data</span>
+<span class="cstat-no" title="statement not covered" >        this.setState({ imageProcessingPreview: `data:image/jpeg;base64,${Buffer.from(imageBinaries).toString('base64')}`, circularProgress: false, settingsDisabled: false })</span>
+      })
+    }
+  }
+&nbsp;
+  requestImageProcessing = <span class="fstat-no" title="function not covered" >(r</span>esolution, rotate, blur, gamma, sharpen, flipY, flipX, negate, normalize, grayscale, median, convolve, 
+    linear, recomb, format, removeAlpha, addAlpha) =&gt; {
+    let renderingInProgressSnackbar = <span class="cstat-no" title="statement not covered" >this.props.enqueueSnackbar('Trwa renderowanie pliku...', { variant: 'info', persist: 'true' })</span>
+<span class="cstat-no" title="statement not covered" >    this.setState({ nextFileButtonDisabled: true })</span>
+    let params = <span class="cstat-no" title="statement not covered" >new URLSearchParams();</span>
+<span class="cstat-no" title="statement not covered" >    params.append('doConvolve', this.state.convolve)</span>
+<span class="cstat-no" title="statement not covered" >    params.append('doRecomb', this.state.recomb)</span>
+<span class="cstat-no" title="statement not covered" >    params.append('resolution', resolution);</span>
+<span class="cstat-no" title="statement not covered" >    params.append('rotate', rotate);</span>
+<span class="cstat-no" title="statement not covered" >    params.append('blur', blur);</span>
+<span class="cstat-no" title="statement not covered" >    params.append('gamma', gamma);</span>
+<span class="cstat-no" title="statement not covered" >    params.append('sharpen', sharpen);</span>
+<span class="cstat-no" title="statement not covered" >    params.append('flipY', flipY);</span>
+<span class="cstat-no" title="statement not covered" >    params.append('flipX', flipX);</span>
+<span class="cstat-no" title="statement not covered" >    params.append('negate', negate);</span>
+<span class="cstat-no" title="statement not covered" >    params.append('normalize', normalize);</span>
+<span class="cstat-no" title="statement not covered" >    params.append('grayscale', grayscale);</span>
+<span class="cstat-no" title="statement not covered" >    params.append('median', median);</span>
+<span class="cstat-no" title="statement not covered" >    params.append('convolve', convolve);</span>
+<span class="cstat-no" title="statement not covered" >    params.append('linear', linear);</span>
+<span class="cstat-no" title="statement not covered" >    params.append('recomb', recomb);</span>
+<span class="cstat-no" title="statement not covered" >    params.append('format', format);</span>
+<span class="cstat-no" title="statement not covered" >    params.append('removeAlpha', removeAlpha);</span>
+<span class="cstat-no" title="statement not covered" >    params.append('addAlpha', addAlpha);</span>
+<span class="cstat-no" title="statement not covered" >    axios({</span>
+      url: '/api/imageProcessing',
+      method: 'POST',
+      data: params,
+    }).then(<span class="fstat-no" title="function not covered" >re</span>s =&gt; {
+      let imageBinaries = <span class="cstat-no" title="statement not covered" >res.data.binary.data;</span>
+      var bytes = <span class="cstat-no" title="statement not covered" >new Uint8Array(imageBinaries);</span>
+<span class="cstat-no" title="statement not covered" >      this.props.closeSnackbar(renderingInProgressSnackbar)</span>
+<span class="cstat-no" title="statement not covered" >      this.setState({ nextFileButtonDisabled: false })</span>
+      const url = <span class="cstat-no" title="statement not covered" >window.URL.createObjectURL(new Blob([bytes]));</span>
+      const link = <span class="cstat-no" title="statement not covered" >document.createElement('a');</span>
+<span class="cstat-no" title="statement not covered" >      link.href = url;</span>
+<span class="cstat-no" title="statement not covered" >      link.setAttribute('download', `${imageName}_converted.${format !== '' ? format : imageExtension}`);</span>
+<span class="cstat-no" title="statement not covered" >      document.body.appendChild(link);</span>
+<span class="cstat-no" title="statement not covered" >      link.click();</span>
+    })
+  }
+&nbsp;
+  render() {
+    const { classes } = this.props
+    return (
+      &lt;React.Fragment&gt;
+         &lt;MuiThemeProvider theme={theme}&gt;
+        &lt;AppBar&gt;&lt;/AppBar&gt;
+        &lt;div className={classes.root}&gt;
+          &lt;Grid
+            container
+            direction='row'
+            justify='center'
+            alignItems='center'
+            spacing={24}&gt;
+            &lt;Stepper
+              activeStep={this.state.activeStep}
+              uploadForm={&lt;Grid item xs={12} &gt;
+                &lt;Dropzone
+                  acceptedFile={this.handleUpload}
+                  uploadCompleted={this.handleStepper}
+                  metadata={this.handleMetadata}&gt;
+                &lt;/Dropzone&gt;
+              &lt;/Grid&gt;}
+              metadata={&lt;React.Fragment&gt;
+                &lt;Grid item xs={12} &gt;
+                  &lt;Tabs content={{
+                    settings:
+                      &lt;React.Fragment&gt;
+                        &lt;SettingsTextFields
+                          textFieldsDisabled={this.state.settingsDisabled}
+                          navigation={this.handleStepper}
+                          //handle image settings
+                          changeSettings={this.handleSettings}
+                          //image settings from child
+                          resolution={this.state.resolution}
+                          rotate={this.state.rotate}
+                          blur={this.state.blur}
+                          gamma={this.state.gamma}
+                          sharpen={this.state.sharpen}
+                          flipY={this.state.flipY}
+                          flipX={this.state.flipX}
+                          negate={this.state.negate}
+                          normalize={this.state.normalize}
+                          grayscale={this.state.grayscale}
+                          destinationFormat={this.state.destinationFormat}
+                          removeAlpha={this.state.removeAlpha}
+                          addAlpha={this.state.addAlpha}
+                          median={this.state.median}
+                          convolve={this.state.convolve}
+                          linear={this.state.linear}
+                          recomb={this.state.recomb}
+                          recomb00={this.state.recomb00}
+                          recomb01={this.state.recomb01}
+                          recomb02={this.state.recomb02}
+                          recomb10={this.state.recomb10}
+                          recomb11={this.state.recomb11}
+                          recomb12={this.state.recomb12}
+                          recomb20={this.state.recomb20}
+                          recomb21={this.state.recomb21}
+                          recomb22={this.state.recomb22}
+                          convolve00={this.state.convolve00}
+                          convolve01={this.state.convolve01}
+                          convolve02={this.state.convolve02}
+                          convolve10={this.state.convolve10}
+                          convolve11={this.state.convolve11}
+                          convolve12={this.state.convolve12}
+                          convolve20={this.state.convolve20}
+                          convolve21={this.state.convolve21}
+                          convolve22={this.state.convolve22}
+                          //errors from child
+                          resolutionError={this.state.resolutionError}
+                          rotateError={this.state.rotateError}
+                          blurError={this.state.blurError}
+                          gammaError={this.state.gammaError}
+                          sharpenError={this.state.sharpenError}
+                          medianError={this.state.medianError}
+                          recomb00Error={this.state.recomb00Error}
+                          recomb01Error={this.state.recomb01Error}
+                          recomb02Error={this.state.recomb02Error}
+                          recomb10Error={this.state.recomb10Error}
+                          recomb11Error={this.state.recomb11Error}
+                          recomb12Error={this.state.recomb12Error}
+                          recomb20Error={this.state.recomb20Error}
+                          recomb21Error={this.state.recomb21Error}
+                          recomb22Error={this.state.recomb22Error}
+                          convolve00Error={this.state.convolve00Error}
+                          convolve01Error={this.state.convolve01Error}
+                          convolve02Error={this.state.convolve02Error}
+                          convolve10Error={this.state.convolve10Error}
+                          convolve11Error={this.state.convolve11Error}
+                          convolve12Error={this.state.convolve12Error}
+                          convolve20Error={this.state.convolve20Error}
+                          convolve21Error={this.state.convolve21Error}
+                          convolve22Error={this.state.convolve22Error}
+                          //images preview
+                          processedImagePreview={&lt;ImageCard imgSrc={this.state.previewToggle === 'processingPreview' ? this.state.imageProcessingPreview : <span class="branch-1 cbranch-no" title="branch not covered" >this.state.uploadedImage}</span>
+                            previewToggle={this.handlePreviewToggle}
+                            circularProgress={this.state.circularProgress}&gt;&lt;/ImageCard&gt;}
+                        &gt;&lt;/SettingsTextFields&gt;
+                      &lt;/React.Fragment&gt;,
+                    metadata: &lt;MetadataTable metadata={this.state.metadata}&gt;&lt;/MetadataTable&gt;
+                  }}&gt;&lt;/Tabs&gt;
+                &lt;/Grid&gt;&lt;/React.Fragment&gt;}
+              completedStep={
+                &lt;Grid container spacing={24} className={classes.navButtons} justify='center'&gt;
+                  &lt;Grid item xs={12} sm={6} md={4} lg={3}&gt;
+                    &lt;Button variant='contained' color='primary' fullWidth onClick={<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >this.handleStepper(0)}</span> disabled={this.state.nextFileButtonDisabled}&gt;Kolejny plik&lt;/Button&gt;
+                  &lt;/Grid&gt;
+                &lt;/Grid&gt;
+              }
+            &gt;
+            &lt;/Stepper&gt;
+          &lt;/Grid&gt;
+        &lt;/div&gt;
+        &lt;/MuiThemeProvider&gt;
+      &lt;/React.Fragment&gt;
+    );
+  }
+}
+&nbsp;
+export default withStyles(styles)(withSnackbar(App));
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Thu Apr 18 2019 13:28:23 GMT+0200 (GMT+02:00)
+</div>
+</div>
+<script src="..\prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="..\sorter.js"></script>
+</body>
+</html>

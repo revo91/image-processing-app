@@ -15,7 +15,8 @@ import Button from '@material-ui/core/Button';
 import ImageCard from './components/ImageCard';
 import deepPurple from '@material-ui/core/colors/deepPurple';
 import teal from '@material-ui/core/colors/teal';
-
+import Footer from './components/Footer';
+import grey from '@material-ui/core/colors/grey';
 
 const theme = createMuiTheme({
   palette: {
@@ -30,10 +31,16 @@ const theme = createMuiTheme({
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    margin: theme.spacing.unit * 3
+    margin: theme.spacing(6)
   },
   dropzone: {
     textAlign: 'center'
+  },
+  footer: {
+    marginTop: theme.spacing(8),
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+    backgroundColor: grey[300]
   }
 });
 //uploaded image data
@@ -52,6 +59,7 @@ class App extends Component {
     gamma: '',
     sharpen: '',
     median: '',
+    threshold: '',
     flipY: false,
     flipX: false,
     negate: false,
@@ -107,6 +115,8 @@ class App extends Component {
     blurError: false,
     gammaError: false,
     sharpenError: false,
+    medianError: false,
+    thresholdError: false,
     //uploaded image to display
     uploadedImage: '',
     //image preview live,
@@ -133,20 +143,20 @@ class App extends Component {
       this.setState({
         resolution: '', rotate: '', blur: '', gamma: '', sharpen: '', flipY: false, flipX: false, negate: false,
         normalize: false, grayscale: false, destinationFormat: '', removeAlpha: false, addAlpha: false, imageProcessingPreview: '', 
-        previewToggle: 'processingPreview', median: '', convolve: false, linear: false, recomb: false
+        previewToggle: 'processingPreview', median: '', threshold: '', convolve: false, linear: false, recomb: false
       })
     }
   }
 
   returnProcessingPreviewState = () => {
     return [this.state.rotate, this.state.blur, this.state.gamma, this.state.sharpen, 
-      this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale, this.state.median,
+      this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale, this.state.median, this.state.threshold,
       this.returnConvolveMatrix(), this.state.linear, this.returnRecombMatrix()]
   }
 
   returnFinalProcessingState = () => {
     return [this.state.resolution, this.state.rotate, this.state.blur, this.state.gamma, this.state.sharpen, 
-      this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale, this.state.median,
+      this.state.flipY, this.state.flipX, this.state.negate, this.state.normalize, this.state.grayscale, this.state.median, this.state.threshold,
       this.returnConvolveMatrix(), this.state.linear, this.returnRecombMatrix(), this.state.destinationFormat, this.state.removeAlpha, this.state.addAlpha]
   }
 
@@ -201,7 +211,11 @@ class App extends Component {
         () => this.delayPreview())
         break;
       case 'median':
-        this.setState({ [name]: value, medianError: (value >= 1 && value <=5) || value === '' ? false : true },
+        this.setState({ [name]: value, medianError: (value >= 3 && value <=20) || value === '' ? false : true },
+        () => this.delayPreview())
+      break;
+      case 'threshold': 
+        this.setState({ [name]: value, thresholdError: (value >= 1 && value <=255) || value === '' ? false : true},
         () => this.delayPreview())
       break;
       case 'convolve00':
@@ -323,8 +337,8 @@ class App extends Component {
     })
   }
 
-  requestImageProcessingPreview = (rotate, blur, gamma, sharpen, flipY, flipX, negate, normalize, grayscale, median, convolve, linear, recomb) => {
-    if ((this.state.resolutionError || this.state.rotateError || this.state.blurError || this.state.gammaError || this.state.sharpenError) !== true) {
+  requestImageProcessingPreview = (rotate, blur, gamma, sharpen, flipY, flipX, negate, normalize, grayscale, median, threshold, convolve, linear, recomb) => {
+    if ((this.state.resolutionError || this.state.rotateError || this.state.blurError || this.state.gammaError || this.state.sharpenError || this.state.medianError || this.state.thresholdError) !== true) {
       this.setState({ circularProgress: true, settingsDisabled: true })
       let params = new URLSearchParams();
       params.append('doConvolve', this.state.convolve)
@@ -339,6 +353,7 @@ class App extends Component {
       params.append('normalize', normalize);
       params.append('grayscale', grayscale);
       params.append('median', median);
+      params.append('threshold', threshold);
       convolve.map(x=>{
         params.append('convolve', x);
       })
@@ -355,8 +370,7 @@ class App extends Component {
     }
   }
 
-  requestImageProcessing = (resolution, rotate, blur, gamma, sharpen, flipY, flipX, negate, normalize, grayscale, median, convolve, 
-    linear, recomb, format, removeAlpha, addAlpha) => {
+  requestImageProcessing = (resolution, rotate, blur, gamma, sharpen, flipY, flipX, negate, normalize, grayscale, median, threshold, convolve, linear, recomb, format, removeAlpha, addAlpha) => {
     let renderingInProgressSnackbar = this.props.enqueueSnackbar('Trwa renderowanie pliku...', { variant: 'info', persist: 'true' })
     this.setState({ nextFileButtonDisabled: true })
     let params = new URLSearchParams();
@@ -373,12 +387,16 @@ class App extends Component {
     params.append('normalize', normalize);
     params.append('grayscale', grayscale);
     params.append('median', median);
-    params.append('convolve', convolve);
+    params.append('threshold', threshold);
+    convolve.map(x=>{
+      params.append('convolve', x);
+    })
     params.append('linear', linear);
     params.append('recomb', recomb);
     params.append('format', format);
     params.append('removeAlpha', removeAlpha);
     params.append('addAlpha', addAlpha);
+    
     axios({
       url: '/api/imageProcessing',
       method: 'POST',
@@ -409,7 +427,7 @@ class App extends Component {
             direction='row'
             justify='center'
             alignItems='center'
-            spacing={24}>
+            spacing={6}>
             <Stepper
               activeStep={this.state.activeStep}
               uploadForm={<Grid item xs={12} >
@@ -425,7 +443,7 @@ class App extends Component {
                     settings:
                       <React.Fragment>
                         <SettingsTextFields
-                          textFieldsDisabled={this.state.settingsDisabled}
+                          //textFieldsDisabled={this.state.settingsDisabled}
                           navigation={this.handleStepper}
                           //handle image settings
                           changeSettings={this.handleSettings}
@@ -444,6 +462,7 @@ class App extends Component {
                           removeAlpha={this.state.removeAlpha}
                           addAlpha={this.state.addAlpha}
                           median={this.state.median}
+                          threshold={this.state.threshold}
                           convolve={this.state.convolve}
                           linear={this.state.linear}
                           recomb={this.state.recomb}
@@ -472,6 +491,7 @@ class App extends Component {
                           gammaError={this.state.gammaError}
                           sharpenError={this.state.sharpenError}
                           medianError={this.state.medianError}
+                          thresholdError={this.state.thresholdError}
                           recomb00Error={this.state.recomb00Error}
                           recomb01Error={this.state.recomb01Error}
                           recomb02Error={this.state.recomb02Error}
@@ -500,7 +520,7 @@ class App extends Component {
                   }}></Tabs>
                 </Grid></React.Fragment>}
               completedStep={
-                <Grid container spacing={24} className={classes.navButtons} justify='center'>
+                <Grid container spacing={6} className={classes.navButtons} justify='center'>
                   <Grid item xs={12} sm={6} md={4} lg={3}>
                     <Button variant='contained' color='primary' fullWidth onClick={() => this.handleStepper(0)} disabled={this.state.nextFileButtonDisabled}>Kolejny plik</Button>
                   </Grid>
@@ -509,7 +529,16 @@ class App extends Component {
             >
             </Stepper>
           </Grid>
+          
+          
         </div>
+        <Grid container className={classes.footer}
+            direction='row'
+            justify='center'
+            alignItems='center'
+            spacing={0}>
+              <Footer />
+            </Grid>
         </MuiThemeProvider>
       </React.Fragment>
     );

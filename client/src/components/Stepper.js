@@ -11,18 +11,18 @@ const styles = theme => ({
     width: '100%',
   },
   button: {
-    marginTop: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
+    marginTop: theme.spacing(1),
+    marginRight: theme.spacing(1),
   },
   resetContainer: {
-    padding: theme.spacing.unit * 3,
+    padding: theme.spacing(3),
   },
   stepContent: {
     textAlign: "Center"
   },
   stepperRoot: {
     padding: "0px",
-    paddingTop: theme.spacing.unit * 3
+    paddingTop: theme.spacing(3)
   }
 });
 

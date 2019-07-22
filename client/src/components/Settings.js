@@ -21,10 +21,10 @@ const styles = theme => ({
     width: "100%",
   },
   settingsSubheading: {
-    marginTop: theme.spacing.unit * 4
+    marginTop: theme.spacing(4)
   },
   navButtons: {
-    marginTop: theme.spacing.unit * 5
+    marginTop: theme.spacing(5)
   },
   sticky: {
     WebkitPosition: 'sticky', /* Safari */
@@ -36,11 +36,11 @@ const styles = theme => ({
   },
   gradientRightPrimary: {
     borderRight: `4px solid ${theme.palette.primary.main}`,
-    marginBottom: theme.spacing.unit * 4
+    marginBottom: theme.spacing(4)
   },
   gradientRightSecondary: {
     borderRight: `4px solid ${theme.palette.secondary.main}`,
-    marginBottom: theme.spacing.unit * 4
+    marginBottom: theme.spacing(4)
   }
 });
 
@@ -78,8 +78,8 @@ class Settings extends React.Component {
     const { classes } = this.props;
     return (
       <form className={classes.container} noValidate autoComplete="off">
-        <Grid container spacing={24} justify="space-between">
-          <Grid container item xs={12} sm={12} md={6} spacing={24}>
+        <Grid container spacing={4} justify="space-between">
+          <Grid container item xs={12} sm={12} md={6} spacing={4}>
             <Typography variant="h6" className={classes.settingsSubheading}>Zmiana wielkości obrazu</Typography>
             <Grid item xs={12}>
               <TextField
@@ -165,14 +165,27 @@ class Settings extends React.Component {
                 value={this.props.median}
                 onChange={this.handleChange('median')}
                 margin="normal"
-                helperText="Zakres 1 - 5"
+                helperText="Zakres 3 - 20"
                 error={this.props.medianError}
                 type="Number"
                 disabled={this.props.textFieldsDisabled}
               />
             </Grid>
-
-            <Grid container item xs={12} spacing={24} className={classes.gradientRightPrimary}>
+            <Grid item xs={12}>
+              <TextField
+                id="threshold"
+                label="Progowanie"
+                className={classes.textField}
+                value={this.props.threshold}
+                onChange={this.handleChange('threshold')}
+                margin="normal"
+                helperText="Zakres 1 - 255"
+                error={this.props.thresholdError}
+                type="Number"
+                disabled={this.props.textFieldsDisabled}
+              />
+              </Grid>
+            <Grid container item xs={12} spacing={4} className={classes.gradientRightPrimary}>
               <Grid item xs={12}>
                 <FormGroup row>
                   <FormControlLabel
@@ -185,7 +198,7 @@ class Settings extends React.Component {
                         disabled={this.props.textFieldsDisabled}
                       />
                     }
-                    label="Convolve"
+                    label="Macierz konwolucji"
                   />
                 </FormGroup>
               </Grid>
@@ -313,7 +326,7 @@ class Settings extends React.Component {
 
 
             {/* recomb 3x3 textfields */}
-            <Grid container item xs={12} spacing={24} className={classes.gradientRightSecondary}>
+            <Grid container item xs={12} spacing={4} className={classes.gradientRightSecondary}>
               <Grid item xs={12}>
                 <FormGroup row>
                   <FormControlLabel
@@ -326,7 +339,7 @@ class Settings extends React.Component {
                         disabled={this.props.textFieldsDisabled}
                       />
                     }
-                    label="Recomb"
+                    label="Macierz rekombinacji"
                   />
                 </FormGroup>
               </Grid>
@@ -596,7 +609,7 @@ class Settings extends React.Component {
               </TextField>
             </Grid>
           </Grid>
-          <Grid container item xs={12} sm={12} md={6} spacing={24}>
+          <Grid container item xs={12} sm={12} md={6} spacing={4}>
             <Grid item xs={12}>
               <div className={classes.sticky}>
                 <Typography variant="h6" className={classes.settingsSubheading}>Podgląd</Typography>
@@ -607,7 +620,7 @@ class Settings extends React.Component {
         </Grid>
 
 
-        <Grid container spacing={24} className={classes.navButtons} justify="center">
+        <Grid container spacing={6} className={classes.navButtons} justify="center">
           <Grid item xs={12} sm={6} md={4} lg={3}>
             <Button fullWidth variant="contained" color="secondary" onClick={() => this.props.navigation(0)}>
               Reset
